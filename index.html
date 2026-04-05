@@ -1,100 +1,264 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sw">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ludewa Portal</title>
+  <title>Ludewa Portal & Management - Responsive</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+        --sidebar-bg: #24313c;
+        --sidebar-hover: #1a242c;
+        --sidebar-text: #aeb6c0;
+    }
+
+    body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background-color: #f0f2f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Layout Wrapper */
+    .app-container {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* --- SIDEBAR (Responsive) --- */
+    .sidebar {
+        width: 260px;
+        background-color: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 40;
+    }
+
+    /* Mobile Sidebar Overlay */
+    @media (max-width: 1024px) {
+        .sidebar {
+            position: absolute;
+            left: -260px; /* Hidden by default on mobile */
+        }
+        .sidebar.active {
+            left: 0; /* Show when active */
+        }
+    }
+
+    .sidebar .logo-text {
+        padding: 20px;
+        font-size: 24px;
+        font-family: 'Brush Script MT', cursive, sans-serif;
+        color: #fff;
+        text-align: center;
+    }
+
+    .menu-list li {
+        padding: 12px 20px;
+        font-size: 14px;
+        cursor: pointer;
+        border-bottom: 1px solid #2d3e4b;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .menu-list li:hover { background-color: var(--sidebar-hover); color: #fff; }
+
+    /* --- MAIN CONTENT --- */
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    /* Softaculous Top Nav (PHP, JS, etc) */
+    .soft-top-nav {
+        background-color: #24313c;
+        color: #fff;
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* Action Buttons Styling */
+    .btn-custom {
+        padding: 8px 16px;
+        border: 1px solid #185b9d;
+        background-color: #fff;
+        color: #185b9d;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .btn-custom-primary { background-color: #185b9d; color: #fff; }
+
+    /* Overlay for mobile sidebar */
+    #overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 35;
+    }
+    #overlay.active { display: block; }
+  </style>
+
   <script>
-    function toggleMenu() {
+    // Toggle kwa ajili ya Mobile Sidebar na Menu ya Juu
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("active");
+    }
+
+    function toggleMobileMenu() {
       document.getElementById("mobileMenu").classList.toggle("hidden");
     }
 
     function toggleDropdown(id) {
-      const el = document.getElementById(id);
-      // Funga dropdown nyingine zote kwanza
       document.querySelectorAll(".dropdown-menu").forEach(menu => {
         if(menu.id !== id) menu.classList.add("hidden");
       });
-      el.classList.toggle("hidden");
+      document.getElementById(id).classList.toggle("hidden");
     }
 
-    // Funga dropdown ukibonyeza nje ya menu
-    window.addEventListener("click", function(e) {
+    window.onclick = function(e) {
       if (!e.target.closest('.dropdown')) {
-        document.querySelectorAll(".dropdown-menu").forEach(drop => {
-          drop.classList.add("hidden");
-        });
+        document.querySelectorAll(".dropdown-menu").forEach(drop => drop.classList.add("hidden"));
       }
-    });
+    }
   </script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+
+<body>
 
   <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-2">
       <div class="flex items-center gap-3">
-        <img src="logo.png" alt="LDW Logo" class="h-12 bg-gray-200">
+        <button class="lg:hidden text-gray-600 text-xl p-2 border rounded" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <img src="logo.png" alt="LDW" class="h-10 bg-gray-200">
         <div>
-          <h1 class="font-bold text-lg text-gray-900 leading-none">LDW</h1>
-          <p class="text-xs md:text-sm text-gray-600">Ludewa District Examinations Council - LDEC</p>
+          <h1 class="font-bold text-base md:text-lg text-gray-900 leading-none">LDW</h1>
+          <p class="hidden sm:block text-[10px] text-gray-600 uppercase tracking-wider">Ludewa Exam Council</p>
         </div>
       </div>
-      <button class="md:hidden text-blue-800 text-2xl p-2" onclick="toggleMenu()">☰</button>
+      
+      <div class="flex items-center gap-2">
+          <div class="hidden md:flex items-center gap-2 text-xs font-semibold bg-blue-50 px-3 py-1 rounded-full text-blue-700">
+              <i class="fa-solid fa-user-circle"></i> umawanjo
+          </div>
+          <button class="md:hidden text-blue-800 text-2xl p-2" onclick="toggleMobileMenu()">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+      </div>
     </div>
 
     <nav class="bg-blue-800 text-white hidden md:block">
       <div class="max-w-7xl mx-auto flex px-4">
-        <a href="https://umawanjo.ac.tz/ludewa" class="px-4 py-3 hover:bg-blue-700 transition">Home</a>
-
+        <a href="#" class="px-4 py-3 hover:bg-blue-700 text-sm transition">Home</a>
         <div class="relative dropdown">
-          <button onclick="toggleDropdown('examDropdown')" class="px-4 py-3 hover:bg-blue-700 flex items-center gap-1">
-            Results Pre Mork (2026) <span>▾</span>
+          <button onclick="toggleDropdown('examDrop')" class="px-4 py-3 hover:bg-blue-700 text-sm flex items-center gap-1">
+            Results <span>▾</span>
           </button>
-          <div id="examDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border z-50">
-            <a href="https://umawanjo.ac.tz/ludewa/index.php?exam_id=1&class_level=Form+Two" class="block px-4 py-2 hover:bg-gray-100 border-b">Form Two</a>
-            <a href="https://umawanjo.ac.tz/ludewa/index.php?exam_id=1&class_level=Form+FOUR" class="block px-4 py-2 hover:bg-gray-100">Form Four</a>
-          </div>
-        </div>
-
-        <div class="relative dropdown">
-          <button onclick="toggleDropdown('reportDropdown')" class="px-4 py-3 hover:bg-blue-700 flex items-center gap-1">
-            Report Pre Mork (2026) <span>▾</span>
-          </button>
-          <div id="reportDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border z-50">
-            <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+two" class="block px-4 py-2 hover:bg-gray-100 border-b">Form Two</a>
-            <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+four" class="block px-4 py-2 hover:bg-gray-100">Form Four</a>
-          </div>
-        </div>
-
-        <div class="relative dropdown">
-          <button onclick="toggleDropdown('resultsPCDropdown')" class="px-4 py-3 hover:bg-blue-700 flex items-center gap-1">
-            Results-PC <span>▾</span>
-          </button>
-          <div id="resultsPCDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border z-50">
-            <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+Two" class="block px-4 py-2 hover:bg-gray-100 border-b">Form Two</a>
-            <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+Four" class="block px-4 py-2 hover:bg-gray-100">Form Four</a>
+          <div id="examDrop" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border z-50">
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 border-b">Form Two</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Form Four</a>
           </div>
         </div>
       </div>
     </nav>
   </header>
 
-  <div id="mobileMenu" class="md:hidden hidden bg-blue-700 text-white px-4 py-3 space-y-2 shadow-lg fixed w-full z-40">
-    <a href="https://umawanjo.ac.tz/ludewa" class="block py-2 border-b border-blue-600">Home</a>
-    <details class="border-b border-blue-600">
-      <summary class="cursor-pointer py-2 font-semibold">Results Pre Mork (2026)</summary>
-      <div class="pl-4 pb-2 space-y-2 text-sm">
-        <a href="https://umawanjo.ac.tz/ludewa/index.php?exam_id=1&class_level=Form+TWO" class="block">Form Two</a>
-        <a href="https://umawanjo.ac.tz/ludewa/index.php?exam_id=1&class_level=Form+FOUR" class="block">Form Four</a>
-      </div>
-    </details>
-    </div>
+  <div id="mobileMenu" class="md:hidden hidden bg-blue-900 text-white px-4 py-4 space-y-3 absolute w-full z-50 shadow-2xl">
+    <a href="#" class="block py-2 border-b border-blue-800"><i class="fa-solid fa-home mr-2"></i> Home</a>
+    <a href="#" class="block py-2 border-b border-blue-800"><i class="fa-solid fa-file-invoice mr-2"></i> Results</a>
+    <a href="#" class="block py-2 border-b border-blue-800"><i class="fa-solid fa-chart-line mr-2"></i> Reports</a>
+  </div>
 
-  <section class="bg-blue-50 py-16 text-center border-b">
-    <h2 class="text-3xl font-extrabold mb-2 text-blue-900">WELCOME LUDEWA</h2>
-    <p class="text-gray-600 max-w-xl mx-auto px-4">Providing reliable examination and results services across Ludewa District.</p>
-  </section>
+  <div class="app-container">
+    <div id="overlay" onclick="toggleSidebar()"></div>
+    
+    <aside id="sidebar" class="sidebar">
+        <div class="logo-text">Softaculous</div>
+        <div class="px-4 mb-4">
+            <div class="relative">
+                <input type="text" class="w-full bg-gray-700 border-none text-white text-sm rounded px-3 py-2 outline-none" placeholder="Search scripts...">
+            </div>
+        </div>
+        <ul class="menu-list">
+            <li><span><i class="fa-solid fa-cube icon"></i> SitePad Builder</span></li>
+            <li class="bg-gray-800 text-white"><span><i class="fa-brands fa-wordpress icon"></i> WordPress</span></li>
+            <li><span><i class="fa-solid fa-cart-shopping icon"></i> E-Commerce</span> <i class="fa-solid fa-chevron-right text-[10px]"></i></li>
+            <li><span><i class="fa-solid fa-bullhorn icon"></i> Marketing</span> <i class="fa-solid fa-chevron-right text-[10px]"></i></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header class="soft-top-nav">
+            <div class="flex items-center gap-4">
+                <a href="#" class="active border-b-2 border-white pb-1">PHP</a>
+                <a href="#" class="opacity-70 hover:opacity-100">JS</a>
+                <a href="#" class="opacity-70 hover:opacity-100">Java</a>
+            </div>
+            <div class="flex gap-4 items-center text-sm">
+                <i class="fa-solid fa-gear cursor-pointer"></i>
+                <i class="fa-solid fa-sign-out-alt cursor-pointer text-red-400"></i>
+            </div>
+        </header>
+
+        <div class="content-area p-4 md:p-6">
+            <div class="card bg-white p-4 md:p-6 rounded-lg shadow-sm">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 gap-4">
+                    <h2 class="text-xl md:text-2xl font-light text-gray-800 flex items-center gap-3">
+                        <i class="fa-brands fa-wordpress text-blue-500 text-3xl"></i> WordPress
+                    </h2>
+                    <div class="text-xs text-gray-500">Version: 6.4.1</div>
+                </div>
+
+                <div class="flex overflow-x-auto py-4 gap-2 no-scrollbar">
+                    <button class="btn-custom btn-custom-primary">Install</button>
+                    <button class="btn-custom">Scan</button>
+                    <button class="btn-custom">Import</button>
+                    <button class="btn-custom">Backup</button>
+                </div>
+
+                <div class="mt-4 border rounded-lg overflow-hidden">
+                    <div class="bg-gray-800 text-white px-4 py-3 text-sm font-medium flex justify-between items-center">
+                        <span>Current Installations</span>
+                        <i class="fa-solid fa-rotate-right cursor-pointer"></i>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <div class="min-w-full p-8 text-center text-gray-400 text-sm">
+                            <i class="fa-solid fa-folder-open text-4xl block mb-2 opacity-20"></i>
+                            Hakuna installation iliyopatikana. 
+                            <a href="#" class="text-blue-500 hover:underline ml-1">Anza hapa</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+  </div>
 
 </body>
 </html>
