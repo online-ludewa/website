@@ -12,13 +12,14 @@
 
     function toggleDropdown(id) {
       const el = document.getElementById(id);
-      // Close other desktop dropdowns first
+      // Funga dropdown nyingine zote kwanza
       document.querySelectorAll(".dropdown-menu").forEach(menu => {
         if(menu.id !== id) menu.classList.add("hidden");
       });
       el.classList.toggle("hidden");
     }
 
+    // Funga dropdown ukibonyeza nje ya menu
     window.addEventListener("click", function(e) {
       if (!e.target.closest('.dropdown')) {
         document.querySelectorAll(".dropdown-menu").forEach(drop => {
@@ -30,10 +31,8 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
-  <!-- ======= STICKY HEADER ======= -->
   <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
-      <!-- Logo -->
       <div class="flex items-center gap-3">
         <img src="logo.png" alt="LDW Logo" class="h-12 bg-gray-200">
         <div>
@@ -41,54 +40,48 @@
           <p class="text-xs md:text-sm text-gray-600">Ludewa District Examinations Council - LDEC</p>
         </div>
       </div>
-
-      <!-- Mobile menu button -->
       <button class="md:hidden text-blue-800 text-2xl p-2" onclick="toggleMenu()">☰</button>
     </div>
 
-    <!-- ======= NAVBAR ======= -->
     <nav class="bg-blue-800 text-white hidden md:block">
       <div class="max-w-7xl mx-auto flex px-4">
         <a href="https://umawanjo.ac.tz/ludewa" class="px-4 py-3 hover:bg-blue-700 transition">Home</a>
 
-        <!-- Dropdown 1 -->
         <div class="relative dropdown">
-          <button onclick="toggleDropdown('examDropdown')" class="px-4 py-3 hover:bg-blue-700 flex items-center gap-1">Results Pre Mork (2026)<span>▾</span>
+          <button onclick="toggleDropdown('examDropdown')" class="px-4 py-3 hover:bg-blue-700 flex items-center gap-1">
+            Results Pre Mork (2026) <span>▾</span>
           </button>
-          <div id="examDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border">
+          <div id="examDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border z-50">
             <a href="https://umawanjo.ac.tz/ludewa/index.php?exam_id=1&class_level=Form+Two" class="block px-4 py-2 hover:bg-gray-100 border-b">Form Two</a>
             <a href="https://umawanjo.ac.tz/ludewa/index.php?exam_id=1&class_level=Form+FOUR" class="block px-4 py-2 hover:bg-gray-100">Form Four</a>
           </div>
         </div>
 
-                <div class="relative dropdown">
-          <button onclick="toggleDropdown('examDropdown')" class="px-4 py-3 hover:bg-blue-700 flex items-center gap-1">Report Pre Mork (2026) <span>▾</span>
+        <div class="relative dropdown">
+          <button onclick="toggleDropdown('reportDropdown')" class="px-4 py-3 hover:bg-blue-700 flex items-center gap-1">
+            Report Pre Mork (2026) <span>▾</span>
           </button>
-          <div id="examDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border">
+          <div id="reportDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border z-50">
             <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+two" class="block px-4 py-2 hover:bg-gray-100 border-b">Form Two</a>
             <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+four" class="block px-4 py-2 hover:bg-gray-100">Form Four</a>
           </div>
         </div>
 
-        <!-- Dropdown 2 -->
         <div class="relative dropdown">
           <button onclick="toggleDropdown('resultsPCDropdown')" class="px-4 py-3 hover:bg-blue-700 flex items-center gap-1">
             Results-PC <span>▾</span>
           </button>
-          <div id="resultsPCDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border">
+          <div id="resultsPCDropdown" class="dropdown-menu absolute hidden bg-white text-gray-800 rounded shadow-xl mt-0 w-48 border z-50">
             <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+Two" class="block px-4 py-2 hover:bg-gray-100 border-b">Form Two</a>
             <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+Four" class="block px-4 py-2 hover:bg-gray-100">Form Four</a>
           </div>
         </div>
-              
       </div>
     </nav>
   </header>
 
-  <!-- MOBILE MENU -->
   <div id="mobileMenu" class="md:hidden hidden bg-blue-700 text-white px-4 py-3 space-y-2 shadow-lg fixed w-full z-40">
     <a href="https://umawanjo.ac.tz/ludewa" class="block py-2 border-b border-blue-600">Home</a>
-    
     <details class="border-b border-blue-600">
       <summary class="cursor-pointer py-2 font-semibold">Results Pre Mork (2026)</summary>
       <div class="pl-4 pb-2 space-y-2 text-sm">
@@ -96,73 +89,12 @@
         <a href="https://umawanjo.ac.tz/ludewa/index.php?exam_id=1&class_level=Form+FOUR" class="block">Form Four</a>
       </div>
     </details>
+    </div>
 
-    <details class="border-b border-blue-600">
-      <summary class="cursor-pointer py-2 font-semibold">Report Pre Mork (2026)</summary>
-      <div class="pl-4 pb-2 space-y-2 text-sm">
-        <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+Two" class="block">Form Two</a>
-        <a href="https://umawanjo.ac.tz/ludewa/complete_report.php?exam_id=1&class_level=Form+Four" class="block">Form Four</a>
-      </div>
-    </details>
-    
-    <details class="border-b border-blue-600">
-      <summary class="cursor-pointer py-2 font-semibold">Analysis</summary>
-      <div class="pl-4 pb-2 space-y-2 text-sm">
-        <a href="https://umawanjo.ac.tz/ludewa/missing_percentage_sheet.php" class="block">Missing Raw Data</a>
-        <a href="https://umawanjo.ac.tz/ludewa/missing_subjects_sheet.php" class="block">Missing Schools</a>
-      </div>
-    </details>
-
-    <a href="https://umawanjo.ac.tz/ludewa/registration.php" class="block py-2 border-b border-blue-600">Jiandikishe Hapa</a>
-  </div>
-
-  <!-- HERO -->
   <section class="bg-blue-50 py-16 text-center border-b">
     <h2 class="text-3xl font-extrabold mb-2 text-blue-900">WELCOME LUDEWA</h2>
     <p class="text-gray-600 max-w-xl mx-auto px-4">Providing reliable examination and results services across Ludewa District.</p>
   </section>
-
-  <!-- QUICK LINKS -->
-  <section class="max-w-7xl mx-auto px-4 py-12">
-    <h3 class="text-xl font-bold mb-6 border-l-4 border-blue-800 pl-3">Quick Links</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">      
-      <a href="https://umawanjo.ac.tz/ludewa/sheet.php" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-blue-500 font-semibold">Raw Data</a>
-      <a href="#" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-green-500 font-semibold">Online Services</a>
-      <a href="#" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-orange-500 font-semibold">Announcements</a>
-    </div>
-  </section>
-
-  <!-- NEWS -->
-  <section class="max-w-7xl mx-auto px-4 py-8 bg-white mb-10 rounded-xl shadow-sm">
-    <h3 class="text-xl font-bold mb-6">News & Announcements</h3>
-    <div class="space-y-4">
-      <div class="border-l-4 border-blue-800 bg-gray-50 p-4 rounded-r">
-        <h4 class="font-bold text-blue-900">Exam Timetable Released</h4>
-        <p class="text-sm text-gray-600 mt-1">The timetable for the upcoming exams has been released. Click here to view.</p>
-      </div>
-      <div class="border-l-4 border-blue-800 bg-gray-50 p-4 rounded-r">
-        <h4 class="font-bold text-blue-900">Results Out</h4>
-        <p class="text-sm text-gray-600 mt-1">LDW has released results for the Standard Four Examinations.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="bg-blue-950 text-white mt-auto">
-    <div class="max-w-7xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-2">
-      <div>
-        <h4 class="font-bold text-lg mb-4 text-blue-400">Contact Us</h4>
-        <div class="space-y-2 text-gray-300">
-          <p>📍 Ludewa, Tanzania</p>
-          <p>📧 Email: pmwasyika@gmail.com</p>
-          <p>📞 Phone: +255 765 883 980</p>
-        </div>
-      </div>
-      <div class="flex flex-col md:items-end justify-center border-t border-blue-900 md:border-0 pt-6 md:pt-0">
-        <p class="text-gray-400">&copy; 2026 LDW. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
 
 </body>
 </html>
