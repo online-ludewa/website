@@ -1,256 +1,259 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ludewa Portal & Management - Full Version</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style>
-    :root {
-        --sidebar-bg: #24313c;
-        --sidebar-hover: #1a242c;
-        --sidebar-text: #aeb6c0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classic Web Interface - Fixed Nav & Sidebar</title>
+    <style>
+        body {
+            font-family: serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
 
-    body {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        background-color: #f0f2f5;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+        .container {
+            max-width: 1000px; 
+            margin: auto;
+        }
 
-    .app-container {
-        display: flex;
-        flex: 1;
-        position: relative;
-    }
+        /* =========================================
+           MPANGILIO WA NAVIGATION BAR (FIXED TOP)
+           ========================================= */
+        .navbar {
+            display: flex;
+            background-color: #b5c7de;
+            border: 1px solid #7a7a7a;
+            padding: 0;
+            margin-bottom: 0;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100; 
+        }
 
-    /* SIDEBAR */
-    .sidebar {
-        width: 260px;
-        background-color: var(--sidebar-bg);
-        color: var(--sidebar-text);
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s ease;
-        z-index: 40;
-        flex-shrink: 0;
-    }
+        .nav-item, .dropdown {
+            flex: 1 1 auto;
+            text-align: center;
+            border-right: 2px solid #b5c7de;
+            box-sizing: border-box;
+        }
 
-    @media (max-width: 1024px) {
-        .sidebar { position: fixed; left: -260px; height: 100%; }
-        .sidebar.active { left: 0; }
-    }
+        .navbar > *:last-child {
+            border-right: none;
+        }
 
-    .menu-list li {
-        padding: 12px 20px;
-        font-size: 14px;
-        cursor: pointer;
-        border-bottom: 1px solid #2d3e4b;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .menu-list li:hover { background-color: var(--sidebar-hover); color: #fff; }
+        .nav-link {
+            display: block;
+            padding: 10px 5px;
+            text-decoration: none;
+            color: black;
+            background-color: #d9ead3;
+            font-size: 18px;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-    /* MAIN CONTENT */
-    .main-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        overflow-x: hidden;
-    }
+        .nav-item:hover .nav-link, .dropdown:hover .nav-link {
+            background-color: #c2d6bc; 
+        }
 
-    .soft-top-nav {
-        background-color: #24313c;
-        color: #fff;
-        padding: 10px 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+        /* =========================================
+           MPANGILIO WA DROPDOWN
+           ========================================= */
+        .dropdown {
+            position: relative;
+        }
 
-    #overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 35;
-    }
-    #overlay.active { display: block; }
+        .dropdown-content {
+            display: none; 
+            position: absolute;
+            top: 100%; 
+            left: 0;
+            background-color: #e8f4e5;
+            min-width: 160px; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            z-index: 10; 
+            border: 1px solid #7a7a7a;
+        }
 
-    /* Custom scrollbar for better UI */
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-  </style>
+        .dropdown-content a {
+            color: black;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            font-size: 16px;
+            border-bottom: 1px solid #b5c7de;
+        }
 
-  <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-      document.getElementById("overlay").classList.toggle("active");
-    }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
 
-    function toggleMobileMenu() {
-      document.getElementById("mobileMenu").classList.toggle("hidden");
-    }
+        .dropdown-content a:hover {
+            background-color: #b5c7de; 
+        }
 
-    function toggleDropdown(id) {
-      document.querySelectorAll(".dropdown-menu").forEach(menu => {
-        if(menu.id !== id) menu.classList.add("hidden");
-      });
-      const el = document.getElementById(id);
-      if(el) el.classList.toggle("hidden");
-    }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
 
-    window.onclick = function(e) {
-      if (!e.target.closest('.dropdown')) {
-        document.querySelectorAll(".dropdown-menu").forEach(drop => drop.classList.add("hidden"));
-      }
-    }
-  </script>
+        /* =========================================
+           MPANGILIO WA MWILI (SIDEBAR + IFRAME)
+           ========================================= */
+        .main-wrapper {
+            display: flex;
+            flex-direction: row;
+            margin-top: -1px; 
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #e8f4e5;
+            border: 2px solid #333;
+            border-right: none; 
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+            font-size: 18px;
+            border-bottom: 2px solid #b5c7de;
+            padding-bottom: 5px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px 5px;
+            text-decoration: none;
+            color: black;
+            border-bottom: 1px dashed #999;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover {
+            background-color: #d9ead3;
+        }
+
+        /* MPANGILIO WA IFRAME (CONTENT) */
+        .content-frame {
+            flex: 1; 
+            width: 100%;
+            height: 600px;
+            border: 2px solid #333;
+            background-color: #cfe2f3;
+            box-sizing: border-box;
+        }
+
+        /* =========================================
+           MABADILIKO KWA AJILI YA SIMU (RESPONSIVE)
+           ========================================= */
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            .nav-item, .dropdown {
+                flex: 1 1 30%; 
+                border-bottom: 2px solid #b5c7de;
+            }
+            .navbar > *:nth-child(3n) {
+                border-right: none; 
+            }
+            .nav-link {
+                font-size: 16px;
+            }
+            
+            .main-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: 2px solid #333; 
+                border-bottom: none; 
+            }
+            .content-frame {
+                /* Urefu wa Iframe umeongezwa sana hapa kwa ajili ya simu */
+                height: 1200px; 
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-  <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
-      <div class="flex items-center gap-3">
-        <button class="lg:hidden text-gray-600 text-xl p-2 border rounded" onclick="toggleSidebar()">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-        <img src="logo.png" alt="LDW" class="h-12 bg-gray-200">
-        <div>
-          <h1 class="font-bold text-lg text-gray-900 leading-none">LDW</h1>
-          <p class="text-xs md:text-sm text-gray-600">Ludewa District Examinations Council - LDEC</p>
+<div class="container">
+    <!-- Navigation Bar (Ipo Fixed Top) -->
+    <nav class="navbar">
+        <div class="nav-item">
+            <a href="https://umawanjo.ac.tz/njombe" target="myFrame" class="nav-link">Home</a>
         </div>
-      </div>
-      <button class="md:hidden text-blue-800 text-2xl p-2" onclick="toggleMobileMenu()">☰</button>
-    </div>
 
-    <nav class="bg-blue-800 text-white hidden md:block">
-      <div class="max-w-7xl mx-auto flex px-4">
-        <a href="https://umawanjo.ac.tz/njombe" class="px-4 py-3 hover:bg-blue-700 transition">Home</a>       
-   
+        <div class="dropdown">
+            <a href="#" target="myFrame" class="nav-link">Usajili</a>
+            <div class="dropdown-content">
+                <a href="maelekezo_mfumo.html" target="myFrame">Usajili</a>
+                <a href="vision.html" target="myFrame">Dira na Dhima</a>
+                <a href="management.html" target="myFrame">Uongozi</a>
+            </div>
+        </div>
 
-       
+        <div class="dropdown">
+            <a href="results.php" target="myFrame" class="nav-link">Matokeo</a>
+            <div class="dropdown-content">
+                <a href="results.php" target="myFrame">Matokeo</a>
+                <a href="https://umawanjo.ac.tz/ludewa/private/results.php" target="myFrame">Matokeo PC</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="academic.html" target="myFrame" class="nav-link">Academic</a>
+            <div class="dropdown-content">
+                <a href="courses.html" target="myFrame">Programu/Kozi</a>
+                <a href="results.html" target="myFrame">Matokeo</a>
+                <a href="timetable.html" target="myFrame">Ratiba</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="staff.html" target="myFrame" class="nav-link">Staff</a>
+            <div class="dropdown-content">
+                <a href="teachers.html" target="myFrame">Walimu</a>
+                <a href="admin.html" target="myFrame">Watawala</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="guests.html" target="myFrame" class="nav-link">Guests</a>
+            <div class="dropdown-content">
+                <a href="visit.html" target="myFrame">Kutembelea Chuo</a>
+                <a href="contact.html" target="myFrame">Wasiliana Nasi</a>
+            </div>
+        </div>
     </nav>
-  </header>
-  
-  <div id="mobileMenu" class="md:hidden hidden bg-blue-700 text-white px-4 py-3 space-y-2 fixed w-full z-40 shadow-2xl overflow-y-auto max-h-[80vh]">
-    <br><br><br>
-    <a href="https://umawanjo.ac.tz/njombe" class="block py-2 border-b border-blue-600">Home</a>
-          
-    <details class="border-b border-blue-600">
-      <summary class="cursor-pointer py-2 font-semibold">Analysis</summary>
-      <div class="pl-4 pb-2 space-y-2 text-sm">        
-        <a href="https://umawanjo.ac.tz/njombe/missing_percentage_sheet.php" class="block">Missing Raw Data</a>
-        <a href="https://umawanjo.ac.tz/njombe/missing_subjects_sheet.php" class="block">Missing Schools</a>
-      </div>
-    </details>
-    <a href="https://umawanjo.ac.tz/njombe/registration.php" class="block py-2">Jiandikishe Hapa</a>
-  </div>
 
-  <div class="app-container">
-    <div id="overlay" onclick="toggleSidebar()"></div>
-    
-    <aside id="sidebar" class="sidebar">
-        <div class="p-6 text-white text-2xl font-serif italic border-b border-gray-700 text-center">Softaculous</div>
-        <ul class="menu-list">
-            <li><span><i class="fa-solid fa-cube icon"></i> SitePad Builder</span></li>
-            <li class="bg-gray-800 text-white"><span> Blogs</span> <i class="fa-solid fa-chevron-right"></i></li>
-            <li><span><i class="fa-solid fa-list icon"></i> Portals/CMS</span> <i class="fa-solid fa-chevron-right"></i></li>
-            <li><span><i class="fa-solid fa-cart-shopping icon"></i> E-Commerce</span> <i class="fa-solid fa-chevron-right"></i></li>
-        </ul>
-    </aside>
+    <!-- Eneo linaloshikilia Sidebar na Iframe -->
+    <div class="main-wrapper">
+        
+        <!-- Left Sidebar (Hazifungukii kwenye iframe tena) -->
+        <aside class="sidebar">
+            <h3>Quick Links</h3>
+            <a href="results.php">Matokeo</a>
+            <a href="https://umawanjo.ac.tz/ludewa/private/results.php">Matokeo PC</a>
+            <a href="sheria.html">Sheria & Kanuni</a>
+            <a href="michezo.html">Michezo</a>
+        </aside>
 
-    <main class="main-content">
-        <div class="soft-top-nav text-xs md:text-sm">
-            <div class="flex gap-4">
-                <a href="#" class="border-b-2 border-white">PHP</a>
-                <a href="#" class="opacity-70">JS</a>
-                <a href="#" class="opacity-70">PERL</a>
-            </div>
-            <div class="bg-blue-600 px-3 py-1 rounded text-[10px] md:text-xs">Welcome Ludewa</div>
-        </div>
+        <!-- Iframe ambapo content ya navbar itatokea -->
+        <iframe name="myFrame" srcdoc="<h2 style='font-family:serif; padding:15px; font-size: 18px; line-height: 1.5;'>Karibu! Chagua menu ya juu kuona taarifa zake hapa. Link za upande wa kushoto zitafungua ukurasa mpya.</h2>" class="content-frame">
+        </iframe>
+        
+    </div>
+</div>
 
-        <section class="bg-blue-50 py-10 md:py-16 text-center border-b px-4">
-            <h2 class="text-2xl md:text-3xl font-extrabold mb-2 text-blue-900 uppercase">Welcome Ludewa</h2>
-            <p class="text-gray-600 max-w-xl mx-auto text-sm md:text-base">Providing reliable examination and results services across Ludewa District.</p>
-        </section>
-
-        <div class="p-4 md:p-8 space-y-10">
-                    
-            <section>
-                <h3 class="text-xl font-bold mb-6 border-l-4 border-blue-800 pl-3">Quick Links</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                   <a href="https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-blue-500 font-semibold">Usajili</a>
-                  <a href="https://umawanjo.ac.tz/umawanjo/sitting_plan.php" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-blue-500 font-semibold">Sitting Plan</a> 
-                  <a href="https://umawanjo.ac.tz/njombe/sheet.php" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-blue-500 font-semibold">Raw Data</a>
-                    <a href="https://umawanjo.ac.tz/njombe/results.php" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-green-500 font-semibold">Results</a>
-                    <a href="https://umawanjo.ac.tz/njombe/private/results.php" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-orange-500 font-semibold">Results PC</a>
-                    <a href="https://umawanjo.ac.tz/njombe/exam_id.php" class="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition border-t-4 border-orange-500 font-semibold">Report</a>
-                </div>
-            </section>
-
-            <div class="bg-white rounded-xl shadow-sm border p-4 md:p-8">
-                <div class="text-center mb-6">
-                    <h2 class="text-xl md:text-2xl font-light flex items-center justify-center gap-3">
-                        <p>Ludewa Portal</p>
-                    </h2>
-                </div>
-                <div class="flex flex-wrap justify-center gap-2 mb-8">
-                    <button class="bg-blue-700 text-white px-4 py-2 rounded text-sm hover:bg-blue-800">Install</button>
-                    <button class="border border-blue-700 text-blue-700 px-4 py-2 rounded text-sm hover:bg-blue-50">Scan</button>
-                    <button class="border border-blue-700 text-blue-700 px-4 py-2 rounded text-sm hover:bg-blue-50">Security</button>
-                </div>
-                <div class="border rounded-lg overflow-hidden">
-                    <div class="bg-slate-800 text-white p-3 text-sm flex justify-between">
-                        <span>Installations</span>
-                        <input type="checkbox">
-                    </div>
-                    <div class="p-10 text-center text-gray-500 text-sm italic bg-gray-50">
-                        No Ludewa Installations found. <a href="#" class="text-blue-600 underline">Install a new copy</a>.
-                    </div>
-                </div>
-            </div>
-
-            <section class="bg-white p-6 rounded-xl shadow-sm border">
-                <h3 class="text-xl font-bold mb-6">News & Announcements</h3>
-                <div class="space-y-4">
-                    <div class="border-l-4 border-blue-800 bg-gray-50 p-4 rounded-r">
-                        <h4 class="font-bold text-blue-900">Exam Timetable Released</h4>
-                        <p class="text-sm text-gray-600 mt-1">The timetable for the upcoming exams has been released. Click here to view.</p>
-                    </div>
-                    <div class="border-l-4 border-blue-800 bg-gray-50 p-4 rounded-r">
-                        <h4 class="font-bold text-blue-900">Results Out</h4>
-                        <p class="text-sm text-gray-600 mt-1">LDW has released results for the Standard Four Examinations.</p>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <footer class="bg-blue-950 text-white mt-10">
-            <div class="max-w-7xl mx-auto px-6 py-12 grid gap-8 md:grid-cols-2">
-                <div>
-                    <h4 class="font-bold text-lg mb-4 text-blue-400">Contact Us</h4>
-                    <div class="space-y-2 text-gray-300 text-sm">
-                        <p>📍 Ludewa, Tanzania</p>
-                        <p>📧 Email: pmwasyika@gmail.com</p>
-                        <p>📞 Phone: +255 765 883 980</p>
-                    </div>
-                </div>
-                <div class="flex flex-col md:items-end justify-center border-t border-blue-900 md:border-0 pt-6 md:pt-0">
-                    <p class="text-gray-400 text-sm">&copy; 2026 LDW. All rights reserved.</p>
-                </div>
-            </div>
-        </footer>
-    </main>
-  </div>
+<div style="height: 800px; text-align:center; padding-top: 50px; font-family: serif; color: #555;">
+    <p><i>(Scroll chini ili uone Navigation Bar ikibaki juu)</i></p>
+</div>
 
 </body>
 </html>
