@@ -109,7 +109,6 @@
         }
 
         .sidebar {
-            /* MABADILIKO YAMEFANYIKA HAPA CHINI */
             width: max-content; /* Inafanya upana ulingane na neno refu zaidi */
             white-space: nowrap; /* Inazuia maneno kukatika na kushuka chini */
             background-color: #e8f4e5;
@@ -244,31 +243,38 @@
 </div>
 
 <script>
+    // 1. Kazi ya kuondoa iframe kwenye simu na kuiacha kwenye PC
     function adjustLinksForMobile() {
-        // Tunachukua link zote ambazo zina class 'iframe-link'
         const links = document.querySelectorAll('.iframe-link');
-        
-        // Kama kioo ni cha simu (<= 600px)
         if (window.innerWidth <= 600) {
             links.forEach(link => {
-                // Tunaondoa target="myFrame" ili zifunguke kama ukurasa mpya wa kawaida
                 link.removeAttribute('target');
             });
-        } 
-        // Kama kioo ni kikubwa (PC)
-        else {
+        } else {
             links.forEach(link => {
-                // Tunarudisha target="myFrame" ili zifungukie kwenye iframe
                 link.setAttribute('target', 'myFrame');
             });
         }
     }
-
-    // Run script page inapo-load
     window.addEventListener('DOMContentLoaded', adjustLinksForMobile);
-    
-    // Run script mtu akizungusha simu au kubadili size ya browser
     window.addEventListener('resize', adjustLinksForMobile);
+
+    // 2. Kazi ya Kuficha Dropdown mara baada ya kubofya link ndani yake
+    const dropdownLinks = document.querySelectorAll('.dropdown-content a');
+    dropdownLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Tafuta boksi la dropdown linaloshikilia hii link
+            const dropdownContent = this.parentElement;
+            
+            // Ficha kwa nguvu kwa kutumia CSS ya ndani (inline CSS)
+            dropdownContent.style.display = 'none';
+            
+            // Subiri nusu sekunde (500ms) kisha rudisha uwezo wa CSS kuonyesha tena ukileta mouse
+            setTimeout(() => {
+                dropdownContent.style.display = '';
+            }, 500);
+        });
+    });
 </script>
 
 </body>
