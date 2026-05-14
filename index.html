@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classic Web Interface - Njia A (No Iframe)</title>
+    <title>AJAX Web Interface - Ficha URL</title>
     <style>
         body {
             font-family: serif;
@@ -52,6 +52,7 @@
             font-size: 18px;
             width: 100%;
             box-sizing: border-box;
+            cursor: pointer;
         }
 
         .nav-item:hover .nav-link, .dropdown:hover .nav-link {
@@ -85,6 +86,7 @@
             text-align: left;
             font-size: 16px;
             border-bottom: 1px solid #b5c7de;
+            cursor: pointer;
         }
 
         .dropdown-content a:last-child {
@@ -132,13 +134,14 @@
             color: black;
             border-bottom: 1px dashed #999;
             font-size: 16px;
+            cursor: pointer;
         }
 
         .sidebar a:hover {
             background-color: #d9ead3;
         }
 
-        /* Badala ya Iframe, tunatumia div ya kawaida kuonyesha ujumbe */
+        /* Sehemu itakayopokea data (AJAX Content Area) */
         .content-frame {
             flex: 1; 
             width: 100%;
@@ -151,37 +154,27 @@
             justify-content: center;
             padding: 20px;
             text-align: center;
+            overflow-y: auto; /* Inaruhusu kusscroll kama data ni nyingi */
         }
 
         /* =========================================
            MABADILIKO KWA AJILI YA SIMU (RESPONSIVE)
            ========================================= */
         @media (max-width: 600px) {
-            body {
-                padding: 5px;
-            }
+            body { padding: 5px; }
             .nav-item, .dropdown {
                 flex: 1 1 30%; 
                 border-bottom: 2px solid #b5c7de;
             }
-            .navbar > *:nth-child(3n) {
-                border-right: none; 
-            }
-            .nav-link {
-                font-size: 16px;
-            }
-            .main-wrapper {
-                flex-direction: column;
-            }
+            .navbar > *:nth-child(3n) { border-right: none; }
+            .nav-link { font-size: 16px; }
+            .main-wrapper { flex-direction: column; }
             
-            /* Kwenye simu, sidebar inashuka chini na boksi la ujumbe linafichwa au kuachwa */
             .sidebar {
                 width: 100%;
                 border-right: 2px solid #333;
             }
-            .content-frame {
-                display: none; 
-            }
+            .content-frame { display: none; } /* Unaweza kuibadilisha iwe 'block' kama unataka ionekane kwenye simu */
         }
     </style>
 </head>
@@ -190,50 +183,50 @@
 <div class="container">
     <nav class="navbar">
         <div class="nav-item">
-            <a href="https://umawanjo.ac.tz/njombe" target="_blank" class="nav-link">Home</a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe'); return false;" class="nav-link">Home</a>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Usajili</a>
             <div class="dropdown-content">
-                <a href="https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html" target="_blank">Usajili</a>
-                <a href="#" target="_blank">Dira na Dhima</a>
-                <a href="#" target="_blank">Uongozi</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html'); return false;">Usajili</a>
+                <a href="#" onclick="loadPage('dira.php'); return false;">Dira na Dhima</a>
+                <a href="#" onclick="loadPage('uongozi.php'); return false;">Uongozi</a>
             </div>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Matokeo</a>
             <div class="dropdown-content">
-                <a href="https://umawanjo.ac.tz/njombe/results.php" target="_blank">Matokeo</a>
-                <a href="https://umawanjo.ac.tz/ludewa/private/results.php" target="_blank">Matokeo PC</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;">Matokeo</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/results.php'); return false;">Matokeo PC</a>
             </div>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Academic</a>
             <div class="dropdown-content">
-                <a href="https://umawanjo.ac.tz/njombe/missing_percentage_sheet.php" target="_blank">Missing Data</a>
-                <a href="https://umawanjo.ac.tz/njombe/missing_subjects_sheet.php" target="_blank">Missing Subjects</a>
-                <a href="https://umawanjo.ac.tz/njombe/control_sheet.php" target="_blank">Control Sheet</a>
-                <a href="https://umawanjo.ac.tz/njombe/sheet.php" target="_blank">Raw Data</a>
-                <a href="https://umawanjo.ac.tz/njombe/score_sheet.php" target="_blank">Score Sheet</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_percentage_sheet.php'); return false;">Missing Data</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_subjects_sheet.php'); return false;">Missing Subjects</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/control_sheet.php'); return false;">Control Sheet</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/sheet.php'); return false;">Raw Data</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/score_sheet.php'); return false;">Score Sheet</a>
             </div>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Report</a>
             <div class="dropdown-content">
-                <a href="https://umawanjo.ac.tz/njombe/exam_id.php" class="nav-link">Report</a>
-                <a href="https://umawanjo.ac.tz/ludewa/private/exam_id.php" class="nav-link">Report PC</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/exam_id.php'); return false;" class="nav-link">Report</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/exam_id.php'); return false;" class="nav-link">Report PC</a>
             </div>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Sitting Plan</a>
             <div class="dropdown-content">
-                <a href="https://umawanjo.ac.tz/umawanjo/sitting_plan.php" class="nav-link">Sitting Plan</a>
-                <a href="#" target="_blank">Wasiliana Nasi</a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/umawanjo/sitting_plan.php'); return false;" class="nav-link">Sitting Plan</a>
+                <a href="#" onclick="loadPage('wasiliana.php'); return false;">Wasiliana Nasi</a>
             </div>
         </div>
     </nav>
@@ -242,18 +235,18 @@
         
         <aside class="sidebar">
             <h3>Quick Links</h3>
-            <a href="https://umawanjo.ac.tz/njombe/results.php" target="_blank">Matokeo</a>
-            <a href="https://umawanjo.ac.tz/ludewa/private/results.php" target="_blank">Matokeo PC</a>
-            <a href="https://umawanjo.ac.tz/njombe/login.php" target="_blank">Login</a>
-            <a href="https://umawanjo.ac.tz/njombe/michezo.html" target="_blank">Michezo</a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;">Matokeo</a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/results.php'); return false;">Matokeo PC</a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/login.php'); return false;">Login</a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/michezo.html'); return false;">Michezo</a>
         </aside>
 
-        <!-- Boksi hili limechukua nafasi ya iframe -->
-        <div class="content-frame">
+        <!-- Hapa ndipo kurasa zitakapofungukia (ID imeongezwa) -->
+        <div class="content-frame" id="main_content">
             <h2 style='font-family:serif; font-size: 20px; line-height: 1.6; color: #333;'>
                 Karibu kwenye Mfumo!<br><br>
                 Chagua menu ya juu au link za pembeni kufungua kurasa.<br>
-                (Kurasa zitafunguka kwenye tab mpya ili kuepusha usumbufu).
+                (Sasa kurasa zitafunguka hapa hapa bila kubadili URL ya juu).
             </h2>
         </div>
         
@@ -261,22 +254,47 @@
 </div>
 
 <script>
-    // Kazi ya Kuficha Dropdown mara baada ya kubofya link ndani yake imebaki
+    // 1. KAZI YA KUFICHA DROPDOWN
     const dropdownLinks = document.querySelectorAll('.dropdown-content a');
     dropdownLinks.forEach(link => {
         link.addEventListener('click', function() {
-            // Tafuta boksi la dropdown linaloshikilia hii link
             const dropdownContent = this.parentElement;
-            
-            // Ficha kwa nguvu kwa kutumia CSS ya ndani (inline CSS)
             dropdownContent.style.display = 'none';
-            
-            // Subiri nusu sekunde (500ms) kisha rudisha uwezo wa CSS kuonyesha tena ukileta mouse
             setTimeout(() => {
                 dropdownContent.style.display = '';
             }, 500);
         });
     });
+
+    // 2. KAZI YA AJAX KUVUTA KURASA BILA KUBADILI URL
+    function loadPage(pageUrl) {
+        const contentFrame = document.getElementById('main_content');
+        
+        // Weka ujumbe wa "Inapakia" wakati inasubiri data
+        contentFrame.innerHTML = "<h2 style='color: #059669;'>⏳ Inapakia ukurasa... Tafadhali subiri.</h2>";
+        
+        // Vuta data kutoka kwenye URL husika
+        fetch(pageUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Tatizo la mtandao au ukurasa haupo.");
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Ingiza data kwenye lile boksi (content-frame)
+                contentFrame.innerHTML = html;
+            })
+            .catch(error => {
+                // Kama kuna hitilafu (Mfano CORS au ukurasa umefutwa)
+                contentFrame.innerHTML = `
+                    <h2 style='color: #dc2626;'>❌ Hitilafu Imepakia</h2>
+                    <p>Haikuweza kuvuta ukurasa wa: <b>${pageUrl}</b></p>
+                    <p style='font-size: 14px; color: #666;'>Kama unajaribu ku-load link za domain nyingine ukiwa Localhost, kivinjari kinaweza kuzuia (CORS Policy).</p>
+                `;
+                console.error("Fetch Error: ", error);
+            });
+    }
 </script>
 
 </body>
