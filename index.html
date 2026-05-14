@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJAX Web Interface - Ficha URL</title>
+    <title>Mfumo wa Shule - AJAX Interface</title>
     <style>
         body {
             font-family: serif;
@@ -150,11 +150,11 @@
             background-color: #cfe2f3;
             box-sizing: border-box;
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* Imerekebishwa ili data zianzie juu badala ya katikati */
             justify-content: center;
             padding: 20px;
-            text-align: center;
-            overflow-y: auto; /* Inaruhusu kusscroll kama data ni nyingi */
+            text-align: left;
+            overflow-y: auto; 
         }
 
         /* =========================================
@@ -174,7 +174,7 @@
                 width: 100%;
                 border-right: 2px solid #333;
             }
-            .content-frame { display: none; } /* Unaweza kuibadilisha iwe 'block' kama unataka ionekane kwenye simu */
+            .content-frame { display: none; }
         }
     </style>
 </head>
@@ -183,13 +183,14 @@
 <div class="container">
     <nav class="navbar">
         <div class="nav-item">
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe'); return false;" class="nav-link">Home</a>
+            <!-- Njia fupi inatumika hapa badala ya https://... -->
+            <a href="#" onclick="loadPage('home.php'); return false;" class="nav-link">Home</a>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Usajili</a>
             <div class="dropdown-content">
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html'); return false;">Usajili</a>
+                <a href="#" onclick="loadPage('maelekezo_mfumo.html'); return false;">Usajili</a>
                 <a href="#" onclick="loadPage('dira.php'); return false;">Dira na Dhima</a>
                 <a href="#" onclick="loadPage('uongozi.php'); return false;">Uongozi</a>
             </div>
@@ -198,34 +199,34 @@
         <div class="dropdown">
             <a href="#" class="nav-link">Matokeo</a>
             <div class="dropdown-content">
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;">Matokeo</a>
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/results.php'); return false;">Matokeo PC</a>
+                <a href="#" onclick="loadPage('results.php'); return false;">Matokeo</a>
+                <a href="#" onclick="loadPage('results_pc.php'); return false;">Matokeo PC</a>
             </div>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Academic</a>
             <div class="dropdown-content">
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_percentage_sheet.php'); return false;">Missing Data</a>
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_subjects_sheet.php'); return false;">Missing Subjects</a>
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/control_sheet.php'); return false;">Control Sheet</a>
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/sheet.php'); return false;">Raw Data</a>
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/score_sheet.php'); return false;">Score Sheet</a>
+                <a href="#" onclick="loadPage('missing_percentage_sheet.php'); return false;">Missing Data</a>
+                <a href="#" onclick="loadPage('missing_subjects_sheet.php'); return false;">Missing Subjects</a>
+                <a href="#" onclick="loadPage('control_sheet.php'); return false;">Control Sheet</a>
+                <a href="#" onclick="loadPage('sheet.php'); return false;">Raw Data</a>
+                <a href="#" onclick="loadPage('score_sheet.php'); return false;">Score Sheet</a>
             </div>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Report</a>
             <div class="dropdown-content">
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/exam_id.php'); return false;" class="nav-link">Report</a>
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/exam_id.php'); return false;" class="nav-link">Report PC</a>
+                <a href="#" onclick="loadPage('exam_id.php'); return false;" class="nav-link">Report</a>
+                <a href="#" onclick="loadPage('exam_id_pc.php'); return false;" class="nav-link">Report PC</a>
             </div>
         </div>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Sitting Plan</a>
             <div class="dropdown-content">
-                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/umawanjo/sitting_plan.php'); return false;" class="nav-link">Sitting Plan</a>
+                <a href="#" onclick="loadPage('sitting_plan.php'); return false;" class="nav-link">Sitting Plan</a>
                 <a href="#" onclick="loadPage('wasiliana.php'); return false;">Wasiliana Nasi</a>
             </div>
         </div>
@@ -235,19 +236,21 @@
         
         <aside class="sidebar">
             <h3>Quick Links</h3>
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;">Matokeo</a>
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/results.php'); return false;">Matokeo PC</a>
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/login.php'); return false;">Login</a>
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/michezo.html'); return false;">Michezo</a>
+            <a href="#" onclick="loadPage('results.php'); return false;">Matokeo</a>
+            <a href="#" onclick="loadPage('results_pc.php'); return false;">Matokeo PC</a>
+            <a href="#" onclick="loadPage('login.php'); return false;">Login</a>
+            <a href="#" onclick="loadPage('michezo.html'); return false;">Michezo</a>
         </aside>
 
-        <!-- Hapa ndipo kurasa zitakapofungukia (ID imeongezwa) -->
+        <!-- Hapa ndipo kurasa zitakapofungukia -->
         <div class="content-frame" id="main_content">
-            <h2 style='font-family:serif; font-size: 20px; line-height: 1.6; color: #333;'>
-                Karibu kwenye Mfumo!<br><br>
-                Chagua menu ya juu au link za pembeni kufungua kurasa.<br>
-                (Sasa kurasa zitafunguka hapa hapa bila kubadili URL ya juu).
-            </h2>
+            <div style="text-align: center; width: 100%;">
+                <h2 style='font-family:serif; font-size: 20px; line-height: 1.6; color: #333;'>
+                    Karibu kwenye Mfumo!<br><br>
+                    Chagua menu ya juu au link za pembeni kufungua kurasa.<br>
+                    (Sasa kurasa zitafunguka hapa hapa bila kubadili URL ya juu).
+                </h2>
+            </div>
         </div>
         
     </div>
@@ -271,7 +274,7 @@
         const contentFrame = document.getElementById('main_content');
         
         // Weka ujumbe wa "Inapakia" wakati inasubiri data
-        contentFrame.innerHTML = "<h2 style='color: #059669;'>⏳ Inapakia ukurasa... Tafadhali subiri.</h2>";
+        contentFrame.innerHTML = "<div style='text-align:center; width:100%;'><h2 style='color: #059669;'>⏳ Inapakia ukurasa... Tafadhali subiri.</h2></div>";
         
         // Vuta data kutoka kwenye URL husika
         fetch(pageUrl)
@@ -286,11 +289,13 @@
                 contentFrame.innerHTML = html;
             })
             .catch(error => {
-                // Kama kuna hitilafu (Mfano CORS au ukurasa umefutwa)
+                // Ikitokea faili halipo
                 contentFrame.innerHTML = `
-                    <h2 style='color: #dc2626;'>❌ Hitilafu Imepakia</h2>
-                    <p>Haikuweza kuvuta ukurasa wa: <b>${pageUrl}</b></p>
-                    <p style='font-size: 14px; color: #666;'>Kama unajaribu ku-load link za domain nyingine ukiwa Localhost, kivinjari kinaweza kuzuia (CORS Policy).</p>
+                    <div style='text-align:center; width:100%;'>
+                        <h2 style='color: #dc2626;'>❌ Faili Halijapatikana</h2>
+                        <p>Mfumo umeshindwa kuvuta ukurasa wa: <b>${pageUrl}</b></p>
+                        <p style='font-size: 14px; color: #666;'>Hakikisha faili hili lipo kwenye folda moja na hii index file.</p>
+                    </div>
                 `;
                 console.error("Fetch Error: ", error);
             });
