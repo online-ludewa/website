@@ -18,7 +18,13 @@
         .dropdown-content a{ display:block; padding:10px 15px; text-decoration:none; color:black; text-align:left; border-bottom:1px solid #b5c7de; font-size:16px; }
         .dropdown-content a:last-child{ border-bottom:none; }
         .dropdown-content a:hover{ background:#b5c7de; }
-        .dropdown:hover .dropdown-content{ display:block; }
+
+        /* MABADILIKO: CSS hover imezimwa hapa ili JavaScript idhibiti kila kitu, hii inazuia kukwama kwa menu */
+        .dropdown.open .dropdown-content, .dropdown:hover .dropdown-content { display: block; }
+        
+        /* Hii inafuta mfumo wa hover pale unapoondoka kwenye eneo la menu (Inasaidia kompyuta) */
+        .dropdown.force-hide .dropdown-content { display: none !important; }
+
         /* ====================================== MAIN BODY ====================================== */
         .main-wrapper{ display:flex; margin-top:-1px; }
         /* ====================================== SIDEBAR ====================================== */
@@ -36,10 +42,10 @@
             .navbar > *:nth-child(3n){ border-right:none; }
             .nav-link{ font-size:16px; }
             .main-wrapper{ flex-direction:column; }
-            /* MABADILIKO: Kuficha kabisa sidebar kwenye simu */
-            .sidebar{ display: none; } 
+            .sidebar{ display: none; }
             .content-frame{ height:600px; }
             #main_frame{ height:600px; }
+            .dropdown-content { position: static; min-width: 100%; box-shadow: none; }
         }
     </style>
 </head>
@@ -47,33 +53,108 @@
 <div class="container">
     <!-- ====================================== NAVBAR ====================================== -->
     <nav class="navbar">
-        <div class="nav-item"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe'); return false;" class="nav-link"> Home </a> </div>
-        <div class="dropdown"> <a href="#" class="nav-link"> Usajili </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html'); return false;"> Usajili </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/dira.php'); return false;"> Dira na Dhima </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/uongozi.php'); return false;"> Uongozi </a> </div> </div>
-        <div class="dropdown"> <a href="#" class="nav-link"> Matokeo </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;"> Matokeo </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/results.php'); return false;"> Matokeo PC </a> </div> </div>
-        <div class="dropdown"> <a href="#" class="nav-link"> Academic </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/calenda.php'); return false;"> Kalenda </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_percentage_sheet.php'); return false;"> Missing Data </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_subjects_sheet.php'); return false;"> Missing Subjects </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/control_sheet.php'); return false;"> Control Sheet </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/sheet.php'); return false;"> Raw Data </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/score_sheet.php'); return false;"> Score Sheet </a> </div> </div>
-        <div class="dropdown"> <a href="#" class="nav-link"> Report </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/exam_id.php'); return false;"> Report </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/exam_id.php'); return false;"> Report PC </a> </div> </div>
-        <div class="dropdown"> <a href="#" class="nav-link"> Sitting Plan </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/sitting_plan.php'); return false;"> Sitting Plan </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/wasiliana.php'); return false;"> Wasiliana Nasi </a> </div> </div>
+        <div class="nav-item">
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz', this); return false;" class="nav-link"> Home </a>
+        </div>
+        <div class="dropdown" onclick="toggleDropdown(this, event)">
+            <a href="#" class="nav-link"> Usajili </a>
+            <div class="dropdown-content">
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/maelekezo_mfumo.html', this); return false;"> Usajili </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/dira.php', this); return false;"> Dira na Dhima </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/uongozi.php', this); return false;"> Uongozi </a>
+            </div>
+        </div>
+        <div class="dropdown" onclick="toggleDropdown(this, event)">
+            <a href="#" class="nav-link"> Matokeo </a>
+            <div class="dropdown-content">
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/results.php', this); return false;"> Matokeo </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz', this); return false;"> Matokeo PC </a>
+            </div>
+        </div>
+        <div class="dropdown" onclick="toggleDropdown(this, event)">
+            <a href="#" class="nav-link"> Academic </a>
+            <div class="dropdown-content">
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/missing_percentage_sheet.php', this); return false;"> Missing Data </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/missing_subjects_sheet.php', this); return false;"> Missing Subjects </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/control_sheet.php', this); return false;"> Control Sheet </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/sheet.php', this); return false;"> Raw Data </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/score_sheet.php', this); return false;"> Score Sheet </a>
+            </div>
+        </div>
+        <div class="dropdown" onclick="toggleDropdown(this, event)">
+            <a href="#" class="nav-link"> Report </a>
+            <div class="dropdown-content">
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/exam_id.php', this); return false;"> Report </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz', this); return false;"> Report PC </a>
+            </div>
+        </div>
+        <div class="dropdown" onclick="toggleDropdown(this, event)">
+            <a href="#" class="nav-link"> Sitting Plan </a>
+            <div class="dropdown-content">
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/sitting_plan.php', this); return false;"> Sitting Plan </a>
+                <a href="#" onclick="loadPage('https://umawanjo.ac.tz/wasiliana.php', this); return false;"> Wasiliana Nasi </a>
+            </div>
+        </div>
     </nav>
     <!-- ====================================== MAIN WRAPPER ====================================== -->
     <div class="main-wrapper">
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <h3>Quick Links</h3>
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;"> Matokeo </a>
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/results.php'); return false;"> Matokeo PC </a>
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/login.php'); return false;"> Login </a>
-            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/calenda.php'); return false;"> Kalenda </a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/results.php', this); return false;"> Matokeo </a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz', this); return false;"> Matokeo PC </a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/login.php', this); return false;"> Login </a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/calenda.php', this); return false;"> Kalenda </a>
         </aside>
         <!-- CONTENT AREA -->
-        <div class="content-frame"> <iframe id="main_frame" src="https://umawanjo.ac.tz/njombe"> </iframe> </div>
+        <div class="content-frame">
+            <iframe id="main_frame" src="https://umawanjo.ac.tz"> </iframe>
+        </div>
     </div>
 </div>
+
 <script>
-function loadPage(pageUrl){
+function toggleDropdown(element, event) {
+    if (window.innerWidth <= 600) {
+        if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('dropdown')) {
+            event.preventDefault();
+            document.querySelectorAll('.dropdown').forEach(drop => {
+                if (drop !== element) drop.classList.remove('open');
+            });
+            element.classList.toggle('open');
+        }
+    }
+}
+
+function loadPage(pageUrl, element){
     const externalPages = [ 'login.php', 'results.php', 'results_pc.php', 'exam_id.php', 'exam_id_pc.php', 'missing_percentage_sheet.php', 'missing_subjects_sheet.php', 'control_sheet.php', 'sheet.php', 'score_sheet.php' ];
     const shouldOpenExternally = externalPages.some(page => pageUrl.includes(page) );
-    if(shouldOpenExternally){ window.open(pageUrl, '_blank'); }
-    else{ document.getElementById('main_frame').src = pageUrl; }
+    if(shouldOpenExternally){
+        window.open(pageUrl, '_blank');
+    } else {
+        document.getElementById('main_frame').src = pageUrl;
+    }
+
+    // MABADILIKO: Inalazimisha menu kufunga mara moja kwenye simu na kompyuta (Desktop na Mobile)
+    document.querySelectorAll('.dropdown').forEach(drop => {
+        drop.classList.remove('open');
+        drop.classList.add('force-hide'); // Inazima hover ya CSS kwa sekunde chache
+    });
+
+    // Inarudisha uwezo wa hover wa kawaida mtumiaji akisogeza panya (mouse) nje ya eneo la menu
+    setTimeout(() => {
+        document.querySelectorAll('.dropdown').forEach(drop => {
+            drop.classList.remove('force-hide');
+        });
+    }, 300);
+}
+
+window.onclick = function(event) {
+    if (!event.target.matches('.nav-link')) {
+        document.querySelectorAll('.dropdown').forEach(drop => {
+            drop.classList.remove('open');
+        });
+    }
 }
 </script>
 </body>
