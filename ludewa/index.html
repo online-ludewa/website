@@ -4,486 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mfumo wa Shule</title>
-
     <style>
-
-        body{
-            font-family: serif;
-            margin:0;
-            padding:10px;
-            background:#f0f0f0;
-        }
-
-        .container{
-            max-width:1000px;
-            margin:auto;
-        }
-
-        /* ======================================
-           NAVIGATION BAR
-        ====================================== */
-
-        .navbar{
-            display:flex;
-            flex-wrap:wrap;
-            background:#b5c7de;
-            border:1px solid #7a7a7a;
-            position:sticky;
-            top:0;
-            z-index:1000;
-        }
-
-        .nav-item,
-        .dropdown{
-            flex:1 1 auto;
-            position:relative;
-            text-align:center;
-            border-right:2px solid #b5c7de;
-        }
-
-        .navbar > *:last-child{
-            border-right:none;
-        }
-
-        .nav-link{
-            display:block;
-            padding:10px 5px;
-            text-decoration:none;
-            background:#d9ead3;
-            color:black;
-            font-size:18px;
-            cursor:pointer;
-        }
-
-        .nav-link:hover{
-            background:#c2d6bc;
-        }
-
-        /* ======================================
-           DROPDOWN
-        ====================================== */
-
-        .dropdown-content{
-            display:none;
-            position:absolute;
-            top:100%;
-            left:0;
-            min-width:220px;
-            background:#e8f4e5;
-            border:1px solid #7a7a7a;
-            box-shadow:0 8px 16px rgba(0,0,0,0.2);
-            z-index:999;
-        }
-
-        .dropdown-content a{
-            display:block;
-            padding:10px 15px;
-            text-decoration:none;
-            color:black;
-            text-align:left;
-            border-bottom:1px solid #b5c7de;
-            font-size:16px;
-        }
-
-        .dropdown-content a:last-child{
-            border-bottom:none;
-        }
-
-        .dropdown-content a:hover{
-            background:#b5c7de;
-        }
-
-        .dropdown:hover .dropdown-content{
-            display:block;
-        }
-
-        /* ======================================
-           MAIN BODY
-        ====================================== */
-
-        .main-wrapper{
-            display:flex;
-            margin-top:-1px;
-        }
-
-        /* ======================================
-           SIDEBAR
-        ====================================== */
-
-        .sidebar{
-            width:max-content;
-            white-space:nowrap;
-            background:#e8f4e5;
-            border:2px solid #333;
-            border-right:none;
-            padding:15px;
-            box-sizing:border-box;
-        }
-
-        .sidebar h3{
-            margin-top:0;
-            font-size:18px;
-            border-bottom:2px solid #b5c7de;
-            padding-bottom:5px;
-        }
-
-        .sidebar a{
-            display:block;
-            padding:10px 5px;
-            text-decoration:none;
-            color:black;
-            border-bottom:1px dashed #999;
-            font-size:16px;
-        }
-
-        .sidebar a:hover{
-            background:#d9ead3;
-        }
-
-        /* ======================================
-           CONTENT AREA
-        ====================================== */
-
-        .content-frame{
-            flex:1;
-            min-height:700px;
-            border:2px solid #333;
-            background:#cfe2f3;
-            overflow:hidden;
-        }
-
-        #main_frame{
-            width:100%;
-            height:700px;
-            border:none;
-            background:white;
-        }
-
-        /* ======================================
-           MOBILE RESPONSIVE
-        ====================================== */
-
+        body{ font-family: serif; margin:0; padding:10px; background:#f0f0f0; }
+        .container{ max-width:1000px; margin:auto; }
+        /* ====================================== NAVIGATION BAR ====================================== */
+        .navbar{ display:flex; flex-wrap:wrap; background:#b5c7de; border:1px solid #7a7a7a; position:sticky; top:0; z-index:1000; }
+        .nav-item, .dropdown{ flex:1 1 auto; position:relative; text-align:center; border-right:2px solid #b5c7de; }
+        .navbar > *:last-child{ border-right:none; }
+        .nav-link{ display:block; padding:10px 5px; text-decoration:none; background:#d9ead3; color:black; font-size:18px; cursor:pointer; }
+        .nav-link:hover{ background:#c2d6bc; }
+        /* ====================================== DROPDOWN ====================================== */
+        .dropdown-content{ display:none; position:absolute; top:100%; left:0; min-width:220px; background:#e8f4e5; border:1px solid #7a7a7a; box-shadow:0 8px 16px rgba(0,0,0,0.2); z-index:999; }
+        .dropdown-content a{ display:block; padding:10px 15px; text-decoration:none; color:black; text-align:left; border-bottom:1px solid #b5c7de; font-size:16px; }
+        .dropdown-content a:last-child{ border-bottom:none; }
+        .dropdown-content a:hover{ background:#b5c7de; }
+        .dropdown:hover .dropdown-content{ display:block; }
+        /* ====================================== MAIN BODY ====================================== */
+        .main-wrapper{ display:flex; margin-top:-1px; }
+        /* ====================================== SIDEBAR ====================================== */
+        .sidebar{ width:max-content; white-space:nowrap; background:#e8f4e5; border:2px solid #333; border-right:none; padding:15px; box-sizing:border-box; }
+        .sidebar h3{ margin-top:0; font-size:18px; border-bottom:2px solid #b5c7de; padding-bottom:5px; }
+        .sidebar a{ display:block; padding:10px 5px; text-decoration:none; color:black; border-bottom:1px dashed #999; font-size:16px; }
+        .sidebar a:hover{ background:#d9ead3; }
+        /* ====================================== CONTENT AREA ====================================== */
+        .content-frame{ flex:1; min-height:700px; border:2px solid #333; background:#cfe2f3; overflow:hidden; }
+        #main_frame{ width:100%; height:700px; border:none; background:white; }
+        /* ====================================== MOBILE RESPONSIVE ====================================== */
         @media(max-width:600px){
-
-            body{
-                padding:5px;
-            }
-
-            .nav-item,
-            .dropdown{
-                flex:1 1 30%;
-                border-bottom:2px solid #b5c7de;
-            }
-
-            .navbar > *:nth-child(3n){
-                border-right:none;
-            }
-
-            .nav-link{
-                font-size:16px;
-            }
-
-            .main-wrapper{
-                flex-direction:column;
-            }
-
-            .sidebar{
-                width:100%;
-                border-right:2px solid #333;
-            }
-
-            .content-frame{
-                height:600px;
-            }
-
-            #main_frame{
-                height:600px;
-            }
-
+            body{ padding:5px; }
+            .nav-item, .dropdown{ flex:1 1 30%; border-bottom:2px solid #b5c7de; }
+            .navbar > *:nth-child(3n){ border-right:none; }
+            .nav-link{ font-size:16px; }
+            .main-wrapper{ flex-direction:column; }
+            /* MABADILIKO: Kuficha kabisa sidebar kwenye simu */
+            .sidebar{ display: none; } 
+            .content-frame{ height:600px; }
+            #main_frame{ height:600px; }
         }
-
     </style>
 </head>
-
 <body>
-
 <div class="container">
-
-    <!-- ======================================
-         NAVBAR
-    ====================================== -->
-
+    <!-- ====================================== NAVBAR ====================================== -->
     <nav class="navbar">
-
-        <!-- HOME -->
-
-        <div class="nav-item">
-            <a href="#"
-               onclick="loadPage('https://umawanjo.ac.tz/njombe'); return false;"
-               class="nav-link">
-               Home
-            </a>
-        </div>
-
-        <!-- USAJILI -->
-
-        <div class="dropdown">
-
-            <a href="#" class="nav-link">
-                Usajili
-            </a>
-
-            <div class="dropdown-content">
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html'); return false;">
-                   Usajili
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/dira.php'); return false;">
-                   Dira na Dhima
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/uongozi.php'); return false;">
-                   Uongozi
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- MATOKEO -->
-
-        <div class="dropdown">
-
-            <a href="#" class="nav-link">
-                Matokeo
-            </a>
-
-            <div class="dropdown-content">
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;">
-                   Matokeo
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/ludewa/results_pc.php'); return false;">
-                   Matokeo PC
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- ACADEMIC -->
-
-        <div class="dropdown">
-
-            <a href="#" class="nav-link">
-                Academic
-            </a>
-
-            <div class="dropdown-content">
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_percentage_sheet.php'); return false;">
-                   Missing Data
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_subjects_sheet.php'); return false;">
-                   Missing Subjects
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/control_sheet.php'); return false;">
-                   Control Sheet
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/sheet.php'); return false;">
-                   Raw Data
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/score_sheet.php'); return false;">
-                   Score Sheet
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- REPORT -->
-
-        <div class="dropdown">
-
-            <a href="#" class="nav-link">
-                Report
-            </a>
-
-            <div class="dropdown-content">
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/exam_id.php'); return false;">
-                   Report
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/exam_id.php'); return false;">
-                   Report PC
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- SITTING PLAN -->
-
-        <div class="dropdown">
-
-            <a href="#" class="nav-link">
-                Sitting Plan
-            </a>
-
-            <div class="dropdown-content">
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/sitting_plan.php'); return false;">
-                   Sitting Plan
-                </a>
-
-                <a href="#"
-                   onclick="loadPage('https://umawanjo.ac.tz/njombe/wasiliana.php'); return false;">
-                   Wasiliana Nasi
-                </a>
-
-            </div>
-
-        </div>
-
+        <div class="nav-item"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe'); return false;" class="nav-link"> Home </a> </div>
+        <div class="dropdown"> <a href="#" class="nav-link"> Usajili </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html'); return false;"> Usajili </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/dira.php'); return false;"> Dira na Dhima </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/uongozi.php'); return false;"> Uongozi </a> </div> </div>
+        <div class="dropdown"> <a href="#" class="nav-link"> Matokeo </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;"> Matokeo </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/results.php'); return false;"> Matokeo PC </a> </div> </div>
+        <div class="dropdown"> <a href="#" class="nav-link"> Academic </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/calenda.php'); return false;"> Kalenda </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_percentage_sheet.php'); return false;"> Missing Data </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/missing_subjects_sheet.php'); return false;"> Missing Subjects </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/control_sheet.php'); return false;"> Control Sheet </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/sheet.php'); return false;"> Raw Data </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/score_sheet.php'); return false;"> Score Sheet </a> </div> </div>
+        <div class="dropdown"> <a href="#" class="nav-link"> Report </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/exam_id.php'); return false;"> Report </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/exam_id.php'); return false;"> Report PC </a> </div> </div>
+        <div class="dropdown"> <a href="#" class="nav-link"> Sitting Plan </a> <div class="dropdown-content"> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/sitting_plan.php'); return false;"> Sitting Plan </a> <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/wasiliana.php'); return false;"> Wasiliana Nasi </a> </div> </div>
     </nav>
-
-    <!-- ======================================
-         MAIN WRAPPER
-    ====================================== -->
-
+    <!-- ====================================== MAIN WRAPPER ====================================== -->
     <div class="main-wrapper">
-
         <!-- SIDEBAR -->
-
         <aside class="sidebar">
-
             <h3>Quick Links</h3>
-
-            <a href="#"
-               onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;">
-               Matokeo
-            </a>
-
-            <a href="#"
-               onclick="loadPage('https://umawanjo.ac.tz/ludewa/results_pc.php'); return false;">
-               Matokeo PC
-            </a>
-
-            <a href="#"
-               onclick="loadPage('https://umawanjo.ac.tz/njombe/login.php'); return false;">
-               Login
-            </a>
-
-            <a href="#"
-               onclick="loadPage('https://umawanjo.ac.tz/njombe/calenda.php'); return false;">
-               Kalenda
-            </a>
-
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/results.php'); return false;"> Matokeo </a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/ludewa/private/results.php'); return false;"> Matokeo PC </a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/login.php'); return false;"> Login </a>
+            <a href="#" onclick="loadPage('https://umawanjo.ac.tz/njombe/calenda.php'); return false;"> Kalenda </a>
         </aside>
-
         <!-- CONTENT AREA -->
-
-        <div class="content-frame">
-
-            <iframe
-                id="main_frame"
-                src="https://umawanjo.ac.tz/njombe">
-            </iframe>
-
-        </div>
-
+        <div class="content-frame"> <iframe id="main_frame" src="https://umawanjo.ac.tz/njombe"> </iframe> </div>
     </div>
-
 </div>
-
-<!-- ======================================
-     JAVASCRIPT
-====================================== -->
-
 <script>
-
-    function loadPage(pageUrl){
-
-        /*
-        ==========================================
-        PAGES ZITAKAZOFUNGUKA NJE YA IFRAME
-        ==========================================
-        */
-
-        const externalPages = [
-
-            'login.php',
-            'results.php',
-            'results_pc.php',
-            'exam_id.php',
-            'exam_id_pc.php',
-            
-            // Tumeongeza hizi kurasa za Academic hapa chini
-            'missing_percentage_sheet.php',
-            'missing_subjects_sheet.php',
-            'control_sheet.php',
-            'sheet.php',
-            'score_sheet.php'
-
-        ];
-
-        /*
-        ==========================================
-        KAGUA KAMA URL IPO KWENYE LIST
-        ==========================================
-        */
-
-        const shouldOpenExternally = externalPages.some(page =>
-            pageUrl.includes(page)
-        );
-
-        /*
-        ==========================================
-        FUNGUA NJE YA IFRAME
-        ==========================================
-        */
-
-        if(shouldOpenExternally){
-
-            window.open(pageUrl, '_blank');
-
-        }
-
-        /*
-        ==========================================
-        FUNGUA NDANI YA IFRAME
-        ==========================================
-        */
-
-        else{
-
-            document.getElementById('main_frame').src = pageUrl;
-
-        }
-
-    }
-
+function loadPage(pageUrl){
+    const externalPages = [ 'login.php', 'results.php', 'results_pc.php', 'exam_id.php', 'exam_id_pc.php', 'missing_percentage_sheet.php', 'missing_subjects_sheet.php', 'control_sheet.php', 'sheet.php', 'score_sheet.php' ];
+    const shouldOpenExternally = externalPages.some(page => pageUrl.includes(page) );
+    if(shouldOpenExternally){ window.open(pageUrl, '_blank'); }
+    else{ document.getElementById('main_frame').src = pageUrl; }
+}
 </script>
-
 </body>
 </html>
