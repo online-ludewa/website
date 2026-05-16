@@ -21,10 +21,10 @@
         .dropdown-content a:last-child{ border-bottom:none; }
         .dropdown-content a:hover{ background:#b5c7de; }
 
-        /* 1. MABADILIKO KUBWA: Menu inafunguliwa na Class ya .open kwenye simu na PC */
+        /* Menu inafunguliwa na Class ya .open kwenye simu na PC */
         .dropdown.open .dropdown-content { display: block; }
         
-        /* 2. MABADILIKO KUBWA: Tunaweka :hover ifanye kazi Kwenye PC pekee! (Inazuia Sticky Hover kwenye simu) */
+        /* Tunaweka :hover ifanye kazi Kwenye PC pekee! (Inazuia Sticky Hover kwenye simu) */
         @media (min-width: 601px) {
             .dropdown:hover .dropdown-content { display: block; }
         }
@@ -44,18 +44,19 @@
         
         /* ====================================== MOBILE RESPONSIVE ====================================== */
         @media(max-width:600px){
-            body{ padding:0; } /* Punguza margin mazingira yawe safi */
+            body{ padding:5px; } /* Imerudishwa kama mwanzo */
             
-            /* 'position: static' inaruhusu menu ya ndani kuisoma navbar yote na kujaa kwenye kioo */
             .nav-item, .dropdown{ flex:1 1 30%; border-bottom:2px solid #b5c7de; position: static; } 
             .navbar > *:nth-child(3n){ border-right:none; }
             .nav-link{ font-size:16px; }
             .main-wrapper{ flex-direction:column; }
             .sidebar{ display: none; }
-            .content-frame{ height:85vh; border:none; border-top: 2px solid #333; }
-            #main_frame{ height:100%; }
             
-            /* 3. MABADILIKO KUBWA: Hii inafanya menu ishuke nzuri, ijae kioo, na isiharibu umbo la menu zingine */
+            /* VIPIMO VYA IFRAME VIMERUDISHWA KAMA ULIVYOWEKA MWANZO KABISA */
+            .content-frame{ height:600px; }
+            #main_frame{ height:600px; }
+            
+            /* Hii inafanya menu ishuke nzuri, ijae kioo */
             .dropdown-content { 
                 position: absolute; 
                 top: 100%; 
