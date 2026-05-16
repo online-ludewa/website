@@ -7,22 +7,28 @@
     <style>
         body{ font-family: serif; margin:0; padding:10px; background:#f0f0f0; }
         .container{ max-width:1000px; margin:auto; }
+        
         /* ====================================== NAVIGATION BAR ====================================== */
         .navbar{ display:flex; flex-wrap:wrap; background:#b5c7de; border:1px solid #7a7a7a; position:sticky; top:0; z-index:1000; }
         .nav-item, .dropdown{ flex:1 1 auto; position:relative; text-align:center; border-right:2px solid #b5c7de; }
         .navbar > *:last-child{ border-right:none; }
         .nav-link{ display:block; padding:10px 5px; text-decoration:none; background:#d9ead3; color:black; font-size:18px; cursor:pointer; }
         .nav-link:hover{ background:#c2d6bc; }
+        
         /* ====================================== DROPDOWN ====================================== */
         .dropdown-content{ display:none; position:absolute; top:100%; left:0; min-width:220px; background:#e8f4e5; border:1px solid #7a7a7a; box-shadow:0 8px 16px rgba(0,0,0,0.2); z-index:999; }
         .dropdown-content a{ display:block; padding:10px 15px; text-decoration:none; color:black; text-align:left; border-bottom:1px solid #b5c7de; font-size:16px; }
         .dropdown-content a:last-child{ border-bottom:none; }
         .dropdown-content a:hover{ background:#b5c7de; }
 
-        /* MABADILIKO: CSS hover imezimwa hapa ili JavaScript idhibiti kila kitu, hii inazuia kukwama kwa menu */
-        .dropdown.open .dropdown-content, .dropdown:hover .dropdown-content { display: block; }
+        /* 1. MABADILIKO KUBWA: Menu inafunguliwa na Class ya .open kwenye simu na PC */
+        .dropdown.open .dropdown-content { display: block; }
         
-        /* Hii inafuta mfumo wa hover pale unapoondoka kwenye eneo la menu (Inasaidia kompyuta) */
+        /* 2. MABADILIKO KUBWA: Tunaweka :hover ifanye kazi Kwenye PC pekee! (Inazuia Sticky Hover kwenye simu) */
+        @media (min-width: 601px) {
+            .dropdown:hover .dropdown-content { display: block; }
+        }
+        
         .dropdown.force-hide .dropdown-content { display: none !important; }
 
         /* ====================================== MAIN BODY ====================================== */
@@ -35,17 +41,28 @@
         /* ====================================== CONTENT AREA ====================================== */
         .content-frame{ flex:1; min-height:700px; border:2px solid #333; background:#cfe2f3; overflow:hidden; }
         #main_frame{ width:100%; height:700px; border:none; background:white; }
+        
         /* ====================================== MOBILE RESPONSIVE ====================================== */
         @media(max-width:600px){
-            body{ padding:5px; }
-            .nav-item, .dropdown{ flex:1 1 30%; border-bottom:2px solid #b5c7de; }
+            body{ padding:0; } /* Punguza margin mazingira yawe safi */
+            
+            /* 'position: static' inaruhusu menu ya ndani kuisoma navbar yote na kujaa kwenye kioo */
+            .nav-item, .dropdown{ flex:1 1 30%; border-bottom:2px solid #b5c7de; position: static; } 
             .navbar > *:nth-child(3n){ border-right:none; }
             .nav-link{ font-size:16px; }
             .main-wrapper{ flex-direction:column; }
             .sidebar{ display: none; }
-            .content-frame{ height:600px; }
-            #main_frame{ height:600px; }
-            .dropdown-content { position: static; min-width: 100%; box-shadow: none; }
+            .content-frame{ height:85vh; border:none; border-top: 2px solid #333; }
+            #main_frame{ height:100%; }
+            
+            /* 3. MABADILIKO KUBWA: Hii inafanya menu ishuke nzuri, ijae kioo, na isiharibu umbo la menu zingine */
+            .dropdown-content { 
+                position: absolute; 
+                top: 100%; 
+                left: 0; 
+                width: 100%; 
+                box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            }
         }
     </style>
 </head>
@@ -115,8 +132,7 @@
 </div>
 
 <script>
-// 1. ZUIA MENU KURUDI KWENYE KOMPYUTA (MOUSE LEAVE FIX)
-// Hii inaondoa 'force-hide' pale tu mtumiaji anapoondoa mouse kwenye eneo la menu
+// ZUIA MENU KURUDI YENYEWE KWENYE KOMPYUTA (MOUSE LEAVE FIX)
 document.querySelectorAll('.dropdown').forEach(drop => {
     drop.addEventListener('mouseleave', function() {
         this.classList.remove('force-hide');
@@ -124,15 +140,17 @@ document.querySelectorAll('.dropdown').forEach(drop => {
 });
 
 function toggleDropdown(element, event) {
-    if (window.innerWidth <= 600) {
-        // Tunahakikisha anayebonyezwa ni kiungo kikuu cha menu pekee na siyo links za ndani
-        if (event.target.classList.contains('nav-link')) {
-            event.preventDefault();
+    // Tunahakikisha anayebonyezwa ni kiungo kikuu pekee cha nje (siyo links za ndani)
+    if (event.target.classList.contains('nav-link')) {
+        // Hii inazuia ukurasa kuruka na kurudi juu ukibonyeza link ya kwenye simu na PC
+        event.preventDefault(); 
+        
+        if (window.innerWidth <= 600) {
             // Funga menyu nyingine zote kwanza
             document.querySelectorAll('.dropdown').forEach(drop => {
                 if (drop !== element) drop.classList.remove('open');
             });
-            // Toggles (Fungua au funga) menyu iliyobonyezwa
+            // Toggles (Fungua au funga) menyu uliyoibonyeza
             element.classList.toggle('open');
         }
     }
@@ -148,13 +166,13 @@ function loadPage(pageUrl, element){
         document.getElementById('main_frame').src = pageUrl;
     }
 
-    // 2. FUNGA MENU MARA MOJA BAADA YA KUBONYEZA LINK
+    // FUNGA MENU MARA MOJA BAADA YA MTUMIAJI KUCHAGUA LINK
     document.querySelectorAll('.dropdown').forEach(drop => {
-        drop.classList.remove('open'); // Inafunga kwenye simu
+        drop.classList.remove('open'); // Kwenye simu, hii itafunga menu moja kwa moja!
         drop.classList.add('force-hide'); // Inaficha kwa nguvu kwenye PC
     });
 
-    // Timeout imeongezwa kufika sekunde 1 (1000ms) endapo mtu hatasogeza mouse kabisa kwenye PC
+    // Backup ya PC endapo mouse haitasogezwa
     setTimeout(() => {
         document.querySelectorAll('.dropdown').forEach(drop => {
             drop.classList.remove('force-hide');
@@ -162,7 +180,7 @@ function loadPage(pageUrl, element){
     }, 1000);
 }
 
-// 3. FUNGA MENU MTUMIAJI AKIBONYEZA NJE YA ENEO LA MENU (KWENYE SIMU)
+// FUNGA MENU MTUMIAJI AKIBONYEZA ENEO LINGINE LOLOTE NJE YA MENU (KWENYE SIMU)
 window.onclick = function(event) {
     if (!event.target.matches('.nav-link') && !event.target.closest('.dropdown-content')) {
         document.querySelectorAll('.dropdown').forEach(drop => {
