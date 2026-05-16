@@ -115,13 +115,24 @@
 </div>
 
 <script>
+// 1. ZUIA MENU KURUDI KWENYE KOMPYUTA (MOUSE LEAVE FIX)
+// Hii inaondoa 'force-hide' pale tu mtumiaji anapoondoa mouse kwenye eneo la menu
+document.querySelectorAll('.dropdown').forEach(drop => {
+    drop.addEventListener('mouseleave', function() {
+        this.classList.remove('force-hide');
+    });
+});
+
 function toggleDropdown(element, event) {
     if (window.innerWidth <= 600) {
-        if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('dropdown')) {
+        // Tunahakikisha anayebonyezwa ni kiungo kikuu cha menu pekee na siyo links za ndani
+        if (event.target.classList.contains('nav-link')) {
             event.preventDefault();
+            // Funga menyu nyingine zote kwanza
             document.querySelectorAll('.dropdown').forEach(drop => {
                 if (drop !== element) drop.classList.remove('open');
             });
+            // Toggles (Fungua au funga) menyu iliyobonyezwa
             element.classList.toggle('open');
         }
     }
@@ -130,28 +141,30 @@ function toggleDropdown(element, event) {
 function loadPage(pageUrl, element){
     const externalPages = [ 'login.php', 'results.php', 'results_pc.php', 'exam_id.php', 'exam_id_pc.php', 'missing_percentage_sheet.php', 'missing_subjects_sheet.php', 'control_sheet.php', 'sheet.php', 'score_sheet.php' ];
     const shouldOpenExternally = externalPages.some(page => pageUrl.includes(page) );
+    
     if(shouldOpenExternally){
         window.open(pageUrl, '_blank');
     } else {
         document.getElementById('main_frame').src = pageUrl;
     }
 
-    // MABADILIKO: Inalazimisha menu kufunga mara moja kwenye simu na kompyuta (Desktop na Mobile)
+    // 2. FUNGA MENU MARA MOJA BAADA YA KUBONYEZA LINK
     document.querySelectorAll('.dropdown').forEach(drop => {
-        drop.classList.remove('open');
-        drop.classList.add('force-hide'); // Inazima hover ya CSS kwa sekunde chache
+        drop.classList.remove('open'); // Inafunga kwenye simu
+        drop.classList.add('force-hide'); // Inaficha kwa nguvu kwenye PC
     });
 
-    // Inarudisha uwezo wa hover wa kawaida mtumiaji akisogeza panya (mouse) nje ya eneo la menu
+    // Timeout imeongezwa kufika sekunde 1 (1000ms) endapo mtu hatasogeza mouse kabisa kwenye PC
     setTimeout(() => {
         document.querySelectorAll('.dropdown').forEach(drop => {
             drop.classList.remove('force-hide');
         });
-    }, 300);
+    }, 1000);
 }
 
+// 3. FUNGA MENU MTUMIAJI AKIBONYEZA NJE YA ENEO LA MENU (KWENYE SIMU)
 window.onclick = function(event) {
-    if (!event.target.matches('.nav-link')) {
+    if (!event.target.matches('.nav-link') && !event.target.closest('.dropdown-content')) {
         document.querySelectorAll('.dropdown').forEach(drop => {
             drop.classList.remove('open');
         });
