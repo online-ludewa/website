@@ -141,6 +141,26 @@
             background:#d9ead3;
         }
 
+        /* ====================================== PRINT BUTTON ====================================== */
+        
+        .print-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: #2c5e31;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .print-btn:hover {
+            background-color: #1e4021;
+        }
+
         /* ====================================== CONTENT AREA ====================================== */
 
         .content-frame{
@@ -394,6 +414,7 @@
                onclick="loadPage('https://umawanjo.ac.tz/njombe/calenda.php', this); return false;">
                Kalenda
             </a>
+            
             <a href="#"
                onclick="loadPage('https://umawanjo.ac.tz/njombe/kumi_bora.php?exam_id=2&class_level=FORM+Two', this); return false;">
                Best Ten F2
@@ -403,6 +424,9 @@
                onclick="loadPage('https://umawanjo.ac.tz/njombe/kumi_bora.php?exam_id=2&class_level=FORM+Four', this); return false;">
                Best Ten F4
             </a>
+            
+            <!-- Kitufe kipya cha Print kimeongezwa hapa -->
+            <button onclick="printIframeContent()" class="print-btn">🖨️ Print Content</button>
 
         </aside>
 
@@ -551,6 +575,21 @@ window.onclick = function(event) {
             drop.classList.remove('open');
 
         });
+    }
+}
+
+/* ====================================== PRINT IFRAME CONTENT ====================================== */
+function printIframeContent() {
+    const iframe = document.getElementById('main_frame');
+    
+    try {
+        // Lenga (focus) kwenye dirisha la iframe na uanzishe print
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    } catch (error) {
+        // Kama CORS inazuia, toa ujumbe huu kwa mtumiaji
+        alert("Samahani, kivinjari kimezuia ku-print moja kwa moja kutokana na sera za kiusalama (Domain tofauti). \n\nIli ku-print: Bofya kulia (Right-Click) popote ndani ya ukurasa wenye matokeo, kisha chagua 'Print'.");
+        console.error("Imeshindikana ku-print iframe kutokana na CORS restriction:", error);
     }
 }
 
