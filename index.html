@@ -225,6 +225,27 @@
                 box-shadow:0 8px 16px rgba(0,0,0,0.3);
             }
         }
+
+        /* ====================================== PRINT STYLES ====================================== */
+        @media print {
+            /* Ficha Menyu na Sidebar wakati wa kuprint */
+            .navbar, .sidebar {
+                display: none !important;
+            }
+            /* Hakikisha frame inachukua nafasi yote na haina border mbaya */
+            .main-wrapper {
+                margin: 0;
+                padding: 0;
+            }
+            .content-frame {
+                border: none;
+                height: auto;
+                min-height: auto;
+            }
+            #main_frame {
+                height: 100vh; /* Jaribu kuweka height ijae ukurasa mzima */
+            }
+        }
     </style>
 </head>
 
@@ -578,19 +599,17 @@ window.onclick = function(event) {
     }
 }
 
-/* ====================================== PRINT IFRAME CONTENT ====================================== */
+/* ====================================== BORESHA KITUFE CHA PRINT ====================================== */
 function printIframeContent() {
+    // Chukua URL ya ukurasa unaoonekana sasa hivi ndani ya iframe
     const iframe = document.getElementById('main_frame');
+    const currentUrl = iframe.src;
     
-    try {
-        // Lenga (focus) kwenye dirisha la iframe na uanzishe print
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-    } catch (error) {
-        // Kama CORS inazuia, toa ujumbe huu kwa mtumiaji
-        alert("Samahani, kivinjari kimezuia ku-print moja kwa moja kutokana na sera za kiusalama (Domain tofauti). \n\nIli ku-print: Bofya kulia (Right-Click) popote ndani ya ukurasa wenye matokeo, kisha chagua 'Print'.");
-        console.error("Imeshindikana ku-print iframe kutokana na CORS restriction:", error);
-    }
+    // Fungua hiyo URL kwenye Tab Mpya ('_blank')
+    window.open(currentUrl, '_blank');
+    
+    // Toa maelekezo mafupi kwa mtumiaji
+    alert("Ili ku-print vizuri na kuhakikisha majina yote yanatokea, ukurasa umefunguliwa kwenye 'Tab Mpya'.\n\n📌 Nenda kwenye hiyo tab mpya kisha bonyeza Ctrl + P (au Cmd + P) ili ku-print.");
 }
 
 </script>
