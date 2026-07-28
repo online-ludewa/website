@@ -1,425 +1,530 @@
-<?php
-session_start();
-
-// Kagua kama huyu mtu amepitia geti kuu la umawanjo.ac.tz na ana session hai
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
-    // Kama hana, mfukuze arudi kwenye ukurasa wa login!
-    header("Location: https://umawanjo.ac.tz");
-    exit();
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>UMAWANJO | Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cohort — The school year, organized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1F3A33;
+    --forest-deep:#152722;
+    --cream:#F6F2E9;
+    --coral:#E2703A;
+    --slate:#4C6B8A;
+    --moss:#8AA084;
+    --charcoal:#26302B;
+    --line:rgba(38,48,43,0.12);
+    --line-dark:rgba(246,242,233,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--charcoal);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    letter-spacing:-0.015em;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 32px; }
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+  :focus-visible{ outline:2px solid var(--coral); outline-offset:3px; }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
 
-    <link rel="icon" type="image/x-icon" href="https://www.necta.go.tz/img/favicon.ico">
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(246,242,233,0.9);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px;
+    max-width:1140px; margin:0 auto;
+  }
+  .logo{ display:flex; align-items:center; gap:9px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; }
+  .logo-mark{
+    width:22px; height:22px;
+    background:var(--coral);
+    border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--cream); font-size:12px; font-weight:700;
+    transform:rotate(-6deg);
+  }
+  .navlinks{ display:flex; gap:34px; font-size:14.5px; font-weight:500; }
+  .navlinks a{ opacity:0.7; transition:opacity .15s; }
+  .navlinks a:hover{ opacity:1; }
+  @media (max-width:820px){ .navlinks{display:none;} }
+  .navcta{ display:flex; align-items:center; gap:18px; }
+  .btn{
+    display:inline-block; padding:11px 22px;
+    border-radius:100px; font-size:14px; font-weight:600;
+    transition:transform .15s, background .15s, box-shadow .15s;
+  }
+  .btn-solid{ background:var(--forest); color:var(--cream); }
+  .btn-solid:hover{ transform:translateY(-1px); box-shadow:0 8px 20px -8px rgba(31,58,51,0.5); }
+  .btn-ghost{ opacity:0.75; padding-left:0; padding-right:0; }
+  .btn-ghost:hover{ opacity:1; }
+  .btn-coral{ background:var(--coral); color:var(--cream); }
+  .btn-coral:hover{ transform:translateY(-1px); box-shadow:0 8px 20px -8px rgba(226,112,58,0.55); }
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  .hero{
+    background:var(--forest);
+    color:var(--cream);
+    padding:80px 0 0;
+    overflow:hidden;
+  }
+  .hero-inner{ padding-bottom:64px; }
+  .hero-top{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:40px;
+    align-items:start;
+    margin-bottom:56px;
+  }
+  @media (max-width:760px){ .hero-top{grid-template-columns:1fr;} }
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(246,242,233,0.1);
+    border:1px solid var(--line-dark);
+    padding:6px 14px; border-radius:100px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.02em;
+    color:var(--moss);
+    margin-bottom:24px;
+  }
+  .hero h1{
+    font-size:clamp(36px,5vw,58px);
+    line-height:1.06;
+    max-width:15ch;
+    margin-bottom:22px;
+  }
+  .hero h1 .accent{ color:var(--coral); }
+  .hero-sub{
+    font-size:17px;
+    color:rgba(246,242,233,0.72);
+    max-width:44ch;
+    margin-bottom:32px;
+  }
+  .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+  .hero-stats{
+    display:grid; gap:20px;
+    padding-top:6px;
+  }
+  .hstat{ text-align:right; }
+  @media (max-width:760px){ .hstat{ text-align:left; } .hero-stats{ display:flex; gap:28px; } }
+  .hstat .num{ font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:600; color:var(--coral); display:block; }
+  .hstat .lbl{ font-size:12px; color:rgba(246,242,233,0.55); }
 
-    <style>
-        /* ===== GENERAL ===== */
-        :root {
-            --header-bg: #007a33;
-            --nav-bg: #006633;
-            --accent-color: #ffcc00;
-        }
+  .timetable{
+    background:var(--forest-deep);
+    border:1px solid var(--line-dark);
+    border-radius:16px;
+    padding:22px;
+    margin-top:8px;
+  }
+  .tt-head{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:16px;
+  }
+  .tt-head .title{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.04em; color:var(--moss); }
+  .tt-head .day{ font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(246,242,233,0.4); }
+  .tt-grid{ display:grid; gap:8px; }
+  .tt-block{
+    display:grid;
+    grid-template-columns:56px 1fr auto;
+    align-items:center;
+    gap:14px;
+    padding:12px 14px;
+    border-radius:9px;
+    font-size:13.5px;
+    opacity:0;
+    transform:translateY(6px);
+    animation:blockIn .5s ease forwards;
+  }
+  @keyframes blockIn{ to{opacity:1; transform:translateY(0);} }
+  .tt-block:nth-child(1){ background:rgba(226,112,58,0.16); animation-delay:.1s; }
+  .tt-block:nth-child(2){ background:rgba(76,107,138,0.22); animation-delay:.3s; }
+  .tt-block:nth-child(3){ background:rgba(138,160,132,0.18); animation-delay:.5s; }
+  .tt-block:nth-child(4){ background:rgba(226,112,58,0.16); animation-delay:.7s; }
+  .tt-time{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:rgba(246,242,233,0.6); }
+  .tt-room{ font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(246,242,233,0.45); }
+  .tt-name{ color:var(--cream); font-weight:500; }
 
-        body {
-            font-family: "Open Sans", sans-serif;
-            color: #333;
-            background-color: #f5f6fa;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            transition: all 0.5s ease;
-        }
+  .logostrip{
+    background:var(--forest);
+    border-top:1px solid var(--line-dark);
+    padding:26px 0 42px;
+  }
+  .logostrip .wrap{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(246,242,233,0.45);
+  }
+  .logostrip strong{ color:rgba(246,242,233,0.85); font-weight:500; }
 
-        /* ===== TOP HEADER ===== */
-        #top-header {
-            background: var(--header-bg);
-            padding: 10px 0;
-            color: white;
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            z-index: 1100;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        
-        #top-header h4 {
-            text-align: center;
-            font-weight: 800;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            margin: 0;
-            font-size: 1.3rem;
-            line-height: 1.2;
-        }
-        
-        #top-header h5 {
-            text-align: center;
-            font-weight: 600;
-            color: #fff;
-            margin-top: 5px;
-            font-size: 1rem;
-            margin-bottom: 0;
-        }
-        
-        #top-header img.logo-img { height: 75px; width: auto; }
+  section{ padding:96px 0; }
+  .section-head{ max-width:600px; margin-bottom:52px; }
+  .eyebrow2{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--coral);
+    letter-spacing:0.03em; margin-bottom:16px; display:block;
+  }
+  .section-head h2{ font-size:clamp(28px,3.2vw,38px); margin-bottom:14px; }
+  .section-head p{ font-size:16px; color:#4a564e; max-width:50ch; }
 
-        /* ===== FLAG ANIMATION ===== */
-        .flag-wrapper {
-            perspective: 1000px;
-            display: inline-block;
-        }
-        .tz-flag {
-            height: 70px;
-            width: auto;
-            transform-origin: left center;
-            animation: tzWave 2.4s infinite ease-in-out;
-            filter: drop-shadow(3px 6px 8px rgba(0,0,0,0.45));
-        }
-        @keyframes tzWave {
-            0%   { transform: rotateY(0deg) rotateZ(0deg); }
-            20%  { transform: rotateY(-25deg) rotateZ(2deg); }
-            50%  { transform: rotateY(0deg) rotateZ(0deg); }
-            80%  { transform: rotateY(25deg) rotateZ(-2deg); }
-            100% { transform: rotateY(0deg) rotateZ(0deg); }
-        }
+  .bento{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    grid-auto-rows:auto;
+    gap:16px;
+  }
+  @media (max-width:900px){ .bento{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .bento{ grid-template-columns:1fr; } }
+  .bcard{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:28px;
+  }
+  .bcard.big{ grid-column:span 3; }
+  .bcard.wide{ grid-column:span 4; }
+  .bcard.narrow{ grid-column:span 2; }
+  @media (max-width:900px){ .bcard.big, .bcard.wide, .bcard.narrow{ grid-column:span 1; } }
+  .bcard .dot{
+    width:34px; height:34px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+    margin-bottom:18px;
+    color:var(--cream);
+  }
+  .bcard:nth-child(1) .dot{ background:var(--coral); }
+  .bcard:nth-child(2) .dot{ background:var(--slate); }
+  .bcard:nth-child(3) .dot{ background:var(--forest); }
+  .bcard:nth-child(4) .dot{ background:var(--moss); }
+  .bcard:nth-child(5) .dot{ background:var(--coral); }
+  .bcard h3{ font-size:19px; margin-bottom:9px; font-weight:600; }
+  .bcard p{ font-size:14.5px; color:#4a564e; }
 
-        /* ===== LEFT RESPONSIVE SIDEBAR ===== */
-        #sidebar {
-            position: fixed;
-            top: 105px;
-            left: 0;
-            width: 260px;
-            height: calc(100vh - 105px);
-            background: var(--nav-bg);
-            overflow-y: auto;
-            transition: all 0.3s ease;
-            z-index: 1040;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
+  .flow-wrap{ background:var(--forest); color:var(--cream); }
+  .flow-row{
+    display:flex;
+    border-top:1px solid var(--line-dark);
+  }
+  .flow-row:last-child{ border-bottom:1px solid var(--line-dark); }
+  .flow-cell{
+    flex:1;
+    padding:28px 24px;
+    border-left:1px solid var(--line-dark);
+  }
+  .flow-cell:first-child{ border-left:none; }
+  @media (max-width:760px){ .flow-row{ flex-direction:column; } .flow-cell{ border-left:none; border-top:1px solid var(--line-dark); } .flow-row .flow-cell:first-child{ border-top:none; } }
+  .flow-cell .k{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--moss); margin-bottom:10px; display:block; }
+  .flow-cell h4{ font-family:'Space Grotesk',sans-serif; font-size:16.5px; font-weight:600; margin-bottom:8px; }
+  .flow-cell p{ font-size:13.5px; color:rgba(246,242,233,0.6); }
 
-        #sidebar::-webkit-scrollbar { width: 6px; }
-        #sidebar::-webkit-scrollbar-thumb { background-color: #004d26; border-radius: 4px; }
+  .proof-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;
+  }
+  @media (max-width:860px){ .proof-grid{ grid-template-columns:1fr; } }
+  .proof-quote{
+    background:#fff; border:1px solid var(--line); border-radius:16px;
+    padding:36px;
+  }
+  .proof-quote p{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:20px; line-height:1.5; font-weight:500;
+    margin-bottom:20px;
+  }
+  .proof-quote span{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#6a7a6d; }
+  .proof-stats{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .pstat{
+    background:var(--forest); color:var(--cream);
+    border-radius:14px; padding:22px;
+  }
+  .pstat .n{ font-family:'Space Grotesk',sans-serif; font-size:30px; font-weight:700; color:var(--coral); display:block; }
+  .pstat .l{ font-size:12.5px; color:rgba(246,242,233,0.6); margin-top:4px; }
 
-        .sidebar-menu .nav-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .sidebar-menu .nav-link {
-            color: #fff;
-            font-size: 15px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .sidebar-menu .nav-link:hover, .sidebar-menu .nav-link.active, .sidebar-menu .nav-link[aria-expanded="true"] {
-            background: #004d26;
-            color: var(--accent-color);
-        }
-        .sidebar-menu .nav-link i.icon-left { margin-right: 12px; font-size: 18px; }
-        
-        .sidebar-menu .collapse .nav-link {
-            padding-left: 50px;
-            font-size: 14px;
-            background: rgba(0, 0, 0, 0.15);
-        }
+  .pricing-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media (max-width:900px){ .pricing-grid{ grid-template-columns:1fr; } }
+  .plan{
+    background:#fff; border:1px solid var(--line); border-radius:16px;
+    padding:30px 26px; display:flex; flex-direction:column;
+  }
+  .plan.mid{ background:var(--forest); color:var(--cream); border-color:var(--forest); }
+  .plan h3{ font-family:'JetBrains Mono',monospace; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:var(--coral); margin-bottom:16px; }
+  .plan.mid h3{ color:var(--moss); }
+  .plan .price{ font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:700; margin-bottom:4px; }
+  .plan .per{ font-size:13px; opacity:0.6; margin-bottom:22px; }
+  .plan ul{ list-style:none; margin-bottom:26px; flex:1; }
+  .plan li{ font-size:14px; padding:8px 0; display:flex; gap:10px; }
+  .plan li::before{ content:"✓"; color:var(--coral); font-weight:700; }
 
-        /* ===== MAIN CONTENT WRAPPER ===== */
-        #main-content {
-            margin-left: 260px;
-            padding-top: 105px;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            position: relative;
-        }
+  .cta{ background:var(--coral); color:var(--cream); text-align:center; }
+  .cta h2{ font-size:clamp(28px,3.6vw,40px); margin-bottom:16px; }
+  .cta p{ max-width:44ch; margin:0 auto 32px; opacity:0.9; font-size:16px; }
+  .cta .btn-solid{ background:var(--forest-deep); }
 
-        /* Night Mode Icon & Toggle Button */
-        .mode-toggle { cursor: pointer; font-size: 24px; color: var(--accent-color); }
-        .sidebar-toggle-btn {
-            background: transparent;
-            border: none;
-            color: var(--accent-color);
-            font-size: 30px;
-            display: none;
-        }
-        .sidebar-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1030;
-            display: none;
-        }
-
-        /* ===== HERO SECTION ===== */
-        #hero { width: 100%; height: 50vh; }
-        #hero .carousel-item {
-            height: 50vh;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-        #hero .carousel-item::before {
-            content: ""; position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.5);
-        }
-        #hero .carousel-content {
-            position: absolute; bottom: 15%; left: 5%;
-            background: rgba(0, 0, 0, 0.65);
-            padding: 20px; border-radius: 10px; color: #fff; max-width: 500px; z-index: 2;
-        }
-
-        /* ===== QUICK ACCESS WIDGETS ===== */
-        #content-area { padding: 40px 0; }
-        .widget-card {
-            background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px; margin-bottom: 25px;
-        }
-        .widget-card h5 { color: var(--header-bg); font-weight: bold; border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; margin-bottom: 15px; }
-        .widget-card ul { list-style: none; padding: 0; }
-        .widget-card ul li { padding: 8px 0; border-bottom: 1px solid #eee; }
-        .widget-card ul li a { text-decoration: none; color: #004d26; transition: 0.3s; display: block; }
-        .widget-card ul li a:hover { color: var(--accent-color); transform: translateX(5px); }
-
-        /* ===== NIGHT MODE ===== */
-        body.night-mode { background-color: #0b1120; color: #cbd5e1; }
-        body.night-mode .widget-card, body.night-mode .card, body.night-mode #sidebar { background: #1e293b !important; color: #f8fafc !important; }
-        body.night-mode .widget-card h5, body.night-mode #top-header h4 { color: #fbbf24 !important; }
-        body.night-mode .widget-card ul li { border-bottom: 1px solid #334155; }
-        body.night-mode .widget-card ul li a { color: #94a3b8; }
-        body.night-mode .sidebar-menu .nav-link { border-bottom: 1px solid #334155; }
-        body.night-mode .sidebar-menu .collapse .nav-link { background: rgba(0, 0, 0, 0.3); }
-
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 992px) {
-            #top-header { padding: 5px 0; }
-            #top-header img.logo-img { height: 50px; }
-            .tz-flag { height: 45px; }
-            #top-header h4 { font-size: 1rem; }
-            #top-header h5 { font-size: 0.8rem; }
-
-            #sidebar { left: -260px; top: 85px; height: calc(100vh - 85px); }
-            #sidebar.show { left: 0; }
-            #main-content { margin-left: 0; padding-top: 85px; }
-            
-            .sidebar-toggle-btn { display: inline-block; }
-            .sidebar-overlay.show { display: block; top: 85px; height: calc(100vh - 85px); }
-        }
-
-        @media (max-width: 768px) {
-            #top-header img.logo-img { height: 40px; }
-            .tz-flag { height: 35px; }
-            #top-header h4 { font-size: 0.85rem; margin-bottom: 2px; }
-            #top-header h5 { font-size: 0.7rem; font-weight: 400; }
-            
-            #sidebar { top: 75px; height: calc(100vh - 75px); }
-            #main-content { padding-top: 75px; }
-            .sidebar-overlay.show { top: 75px; height: calc(100vh - 75px); }
-        }
-
-        @media (max-width: 400px) {
-            #top-header h4 { font-size: 0.7rem; }
-            #top-header h5 { font-size: 0.6rem; }
-            #sidebar { top: 70px; height: calc(100vh - 70px); }
-            #main-content { padding-top: 70px; }
-            .sidebar-overlay.show { top: 70px; height: calc(100vh - 70px); }
-        }
-    </style>
+  footer{ padding:52px 0 40px; background:var(--forest-deep); color:rgba(246,242,233,0.7); }
+  .foot-grid{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; padding-bottom:32px; margin-bottom:24px; border-bottom:1px solid var(--line-dark); }
+  .foot-grid .logo{ color:var(--cream); }
+  .foot-cols{ display:flex; gap:60px; flex-wrap:wrap; }
+  .foot-col h4{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.05em; color:var(--moss); margin-bottom:14px; }
+  .foot-col a{ display:block; font-size:14px; margin-bottom:10px; opacity:0.8; }
+  .foot-col a:hover{ opacity:1; }
+  .foot-bottom{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:13px; opacity:0.55; }
+</style>
 </head>
-
 <body>
 
-<!-- TOP HEADER -->
-<section id="top-header">
-    <div class="container-fluid px-3"> 
-        <div class="row text-center align-items-center justify-content-between">
-            <div class="col-3 col-md-3 text-start ps-1 d-flex align-items-center">
-                <button class="sidebar-toggle-btn me-2" onclick="toggleSidebar()">
-                    <i class="bi bi-list"></i>
-                </button>
-                <img src="https://www.necta.go.tz/img/emblem.png" class="logo-img" alt="Emblem">
-            </div>
-            
-            <div class="col-6 col-md-6 px-0">
-                <h4 class="d-none d-sm-block">THE PRIME MINISTER'S OFFICE</h4>
-                <h4 class="d-block d-sm-none">REGIONAL ADMINISTRATIVE AND LOCAL GOVERNMENT</h4> 
-                <h5>LUDEWA PORTAL</h5>
-            </div>
-            
-            <div class="col-3 col-md-3 text-end pe-1 d-flex align-items-center justify-content-end">
-                <i class="bi bi-moon-stars-fill mode-toggle me-3" onclick="toggleNightMode()"></i>
-                <div class="flag-wrapper">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Flag_of_Tanzania.svg" alt="Tanzania Flag" class="tz-flag">
-                </div>
-            </div>
-        </div>
+<header>
+  <nav class="nav">
+    <a href="#" class="logo"><span class="logo-mark">LDW</span> LUDEWA</a>
+    <div class="navlinks">
+      <a href="https://umawanjo.ac.tz/njombe/github_njombe.html"> Home </a>
+      <a href="#flow">Workflow</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#proof">Schools</a>
     </div>
+    <div class="navcta">
+      <a href="#" class="btn btn-ghost">Log in</a>
+      <a href="#pricing" class="btn btn-coral">Get a demo</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-top">
+      <div>
+        <span class="pill">● Built for K–12 schools</span>
+        <h1>The school year, laid out like it actually runs — <span class="accent">period by period.</span></h1>
+        <p class="hero-sub">Cohort keeps attendance, schedules, and grades on one shared calendar, so nothing gets managed twice and nobody's chasing a spreadsheet at 4pm.</p>
+        <div class="hero-actions">
+          <a href="#pricing" class="btn btn-coral">Get a demo</a>
+          <a href="#flow" class="btn btn-ghost" style="color:var(--cream);">See a school day →</a>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><span class="num">190+</span><span class="lbl">schools running Cohort</span></div>
+        <div class="hstat"><span class="num">12 min</span><span class="lbl">to build a bell schedule</span></div>
+      </div>
+    </div>
+
+    <div class="timetable" role="img" aria-label="Weekly class schedule showing period blocks and rooms">
+      <div class="tt-head">
+        <span class="title">MS. OKAFOR · PERIOD SCHEDULE</span>
+        <span class="day mono">MONDAY</span>
+      </div>
+      <div class="tt-grid">
+        <div class="tt-block">
+          <span class="tt-time">8:15</span>
+          <span class="tt-name">Algebra I — Section B</span>
+          <span class="tt-room">RM 214</span>
+        </div>
+        <div class="tt-block">
+          <span class="tt-time">9:20</span>
+          <span class="tt-name">Geometry — Section A</span>
+          <span class="tt-room">RM 214</span>
+        </div>
+        <div class="tt-block">
+          <span class="tt-time">10:40</span>
+          <span class="tt-name">Prep period</span>
+          <span class="tt-room">—</span>
+        </div>
+        <div class="tt-block">
+          <span class="tt-time">11:30</span>
+          <span class="tt-name">Algebra II — Section C</span>
+          <span class="tt-room">RM 214</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- LEFT RESPONSIVE SIDEBAR -->
-<nav id="sidebar">
-    <ul class="nav flex-column sidebar-menu mb-auto">
-        <li class="nav-item">
-            <a href="website.php" class="nav-link active">
-                <a href="#menuKuu" data-bs-toggle="collapse" class="nav-link"> Dashboard</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#menuKuu" data-bs-toggle="collapse" class="nav-link">
-                <span><i class="bi bi-menu-button-wide icon-left"></i> Usajili </span> 
-                <i class="bi bi-chevron-down"></i>
-            </a>
-            <div class="collapse" id="menuKuu" data-bs-parent="#sidebar">
-                <ul class="nav flex-column">
-                    <li><a class="nav-link" href="https://umawanjo.ac.tz/njombe/github_njombe.html" target="_blank"> Usajili </a></li>
-                    <li><a class="nav-link" href="https://umawanjo.ac.tz/njombe/taarifa_usajili.php" target="_blank"> Shule zilizokamilisha usajili</a></li>
-                    <li><a class="nav-link" href="students_list.php" target="_blank">View Report</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a href="#resultsMenu" data-bs-toggle="collapse" class="nav-link">
-                <span><i class="bi bi-bar-chart icon-left"></i> Results</span> 
-                <i class="bi bi-chevron-down"></i>
-            </a>
-            <div class="collapse" id="resultsMenu" data-bs-parent="#sidebar">
-                <ul class="nav flex-column">
-                    <li><a class="nav-link" href="https://umawanjo.ac.tz/njombe/results.php" target="_blank">Results</a></li>
-                    <li><a class="nav-link" href="group_performance_iframe.php" target="_blank">Academic Family</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a href="#menuKuu2" data-bs-toggle="collapse" class="nav-link">
-                <span><i class="bi bi-folder2-open icon-left"></i> Orodha Nyingine </span> 
-                <i class="bi bi-chevron-down"></i>
-            </a>
-            <div class="collapse" id="menuKuu2" data-bs-parent="#sidebar">
-                <ul class="nav flex-column">
-                    <li><a class="nav-link" href="https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html" target="_blank"> Usajili </a></li>
-                    <li><a class="nav-link" href="https://umawanjo.ac.tz/njombe/taarifa_usajili.php" target="_blank"> Shule zilizokamilisha usajili</a></li>
-                    <li><a class="nav-link" href="students_list.php" target="_blank">View Report</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="https://umawanjo.ac.tz/ludewa" target="_blank"><span><i class="bi bi-globe icon-left"></i> Ludewa Portal</span></a></li>
-    </ul>
-</nav>
+<div class="logostrip">
+  <div class="wrap">
+    <span>Running Cohort:</span>
+    <span><strong>Meridian USD</strong></span>
+    <span><strong>Cedar Grove Unified</strong></span>
+    <span><strong>Fairhaven Public Schools</strong></span>
+    <span><strong>Twin Rivers Academy</strong></span>
+    <span><strong>Northgate ISD</strong></span>
+  </div>
+</div>
 
-<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-<!-- MAIN CONTENT WRAPPER -->
-<div id="main-content">
-    
-    <!-- DASHBOARD VIEW: Inaonekana moja kwa moja hapa -->
-    <div id="dashboard-view">
-        <section id="hero">
-            <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active" style="background-image: url('ludewa_banner1.jpg'); background-color: #333;">
-                        <div class="carousel-content animate__animated animate__fadeInUp">
-                            <h2>Welcome to UBSS Website</h2>
-                            <p>Official site of Umawanjo Boys' Secondary School Examination Portal.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="content-area">
-            <div class="container-fluid px-4">
-                <div class="row">
-                    <aside class="col-xl-3 col-lg-4 mb-4">
-                        <div class="widget-card h-100">
-                            <h5>Quick Access</h5>
-                            <ul>
-                                <li><a href="https://ol.tie.go.tz/" target="_blank"><i class="bi bi-book"></i> Tovuti ya Vitabu (TIE)</a></li>
-                                <li><a href="tathimini.php" target="_blank"><i class="bi bi-cloud-arrow-up"></i> Tathimini ya Mitihani</a></li>
-                                <li><a href="https://matokeo.necta.go.tz/" target="_blank"><i class="bi bi-graph-up"></i> NECTA</a></li>
-                                <li><a href="count_grades.php" target="_blank"><i class="bi bi-graph-up"></i> Count Grades</a></li>
-                                <li><a href="https://web.whatsapp.com/" target="_blank"><i class="bi bi-whatsapp"></i> Whatsapp</a></li>
-                            </ul>
-                        </div>
-                    </aside>
-
-                    <main class="col-xl-6 col-lg-8 mb-4">
-                        <div class="section-title text-center mb-4"><h2>News & Announcements</h2></div>
-                        <div class="card shadow-sm border-0 mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title text-success"><i class="bi bi-megaphone"></i> Exam Timetable Released</h5>
-                                <p class="card-text text-muted">The timetable for the upcoming school examinations has been released. View details in the portal.</p>
-                            </div>
-                        </div>
-                        <div class="card shadow-sm border-0 mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title text-success"><i class="bi bi-clipboard2-check"></i> Results Published</h5>
-                                <p class="card-text text-muted">The October test results have been released. Check your performance on your student account.</p>
-                            </div>
-                        </div>
-                    </main>
-
-                    <aside class="col-xl-3 col-lg-12 mb-4">
-                        <div class="widget-card h-100">
-                            <h5>Upcoming Events</h5>
-                            <ul>
-                                <li><a href="#"><i class="bi bi-calendar-event"></i> Teachers Workshop - Nov 15</a></li>
-                                <li><a href="export-tables_and_contents.php" target="_blank"><i class="bi bi-calendar-check"></i> Mock Exams - Dec 2</a></li>
-                                <li><a href="https://anyonike.github.io/website/Businessu/FM.html" target="_blank"><i class="bi bi-broadcast"></i> Radios</a></li>
-                                <li><a href="https://igunda.infinityfree.me/myapp/students.php?i=1" target="_blank"><i class="bi bi-person-badge"></i> Pre FI</a></li>
-                                <li><a href="https://ubss.byethost11.com/school/index.php" target="_blank"><i class="bi bi-hourglass-split"></i> In Progress</a></li>
-                            </ul>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-        </section>
-
-        <footer id="footer" class="text-white py-4 mt-auto" style="background: #004d26;">
-            <div class="container text-center">
-                <p class="mb-0">&copy; 2026 <strong>UMAWANJO</strong>. All Rights Reserved.</p>
-                <small>Njombe Ludewa, Tanzania | pmwasyika@gmail.com</small>
-            </div>
-        </footer>
+<section id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow2">THE PLATFORM</span>
+      <h2>One calendar, everything on it.</h2>
+      <p>Attendance, grading, scheduling and messaging all read from the same shared school calendar — so a schedule change updates attendance rules, gradebook periods, and parent notices at once.</p>
     </div>
-    
-</div> <!-- END MAIN CONTENT -->
+    <div class="bento">
+      <div class="bcard big">
+        <span class="dot">01</span>
+        <h3>Live attendance</h3>
+        <p>Teachers mark rollcall from any device; the office dashboard updates instantly, period by period.</p>
+      </div>
+      <div class="bcard wide">
+        <span class="dot">02</span>
+        <h3>Gradebook that maps to the schedule</h3>
+        <p>Assignments and report cards are tied to real class periods, not a generic term structure.</p>
+      </div>
+      <div class="bcard narrow">
+        <span class="dot">03</span>
+        <h3>Records</h3>
+        <p>One student file — enrollment, health flags, and discipline notes together.</p>
+      </div>
+      <div class="bcard wide">
+        <span class="dot">04</span>
+        <h3>Conflict-free scheduling</h3>
+        <p>Build bell schedules and sections with automatic room and teacher conflict checks.</p>
+      </div>
+      <div class="bcard big">
+        <span class="dot">05</span>
+        <h3>Family notifications</h3>
+        <p>Absence, tardy, and grade alerts sent home by text or email, in the family's language.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-<script>
-    AOS.init();
+<div class="flow-wrap" id="flow">
+  <div class="wrap">
+    <div style="padding:64px 0 0;">
+      <span class="eyebrow2" style="color:var(--moss);">A SCHOOL DAY, START TO FINISH</span>
+      <h2 style="color:var(--cream); font-size:clamp(26px,3vw,34px); max-width:26ch; margin-bottom:8px;">The actual order things happen in.</h2>
+    </div>
+  </div>
+  <div class="wrap" style="padding:0;">
+    <div class="flow-row">
+      <div class="flow-cell"><span class="k">08:00</span><h4>First bell</h4><p>Teacher opens rollcall for the period, marks the room in under a minute.</p></div>
+      <div class="flow-cell"><span class="k">08:05</span><h4>Office sees it live</h4><p>Attendance rolls up to the office dashboard as each class checks in.</p></div>
+      <div class="flow-cell"><span class="k">08:20</span><h4>Families notified</h4><p>Unexplained absences trigger an automatic text or call home.</p></div>
+      <div class="flow-cell"><span class="k">15:30</span><h4>Day closes itself</h4><p>Attendance and grades post to the record — no re-entry, no reconciliation.</p></div>
+    </div>
+  </div>
+</div>
 
-    // Toggle Mobile Sidebar
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('show');
-        document.querySelector('.sidebar-overlay').classList.toggle('show');
-    }
+<section id="proof">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow2">FROM THE FRONT OFFICE</span>
+      <h2>What changes when it's all one calendar.</h2>
+    </div>
+    <div class="proof-grid">
+      <div class="proof-quote">
+        <p>"A schedule change used to mean updating four systems by hand. Now I change the bell schedule once and attendance, grading periods, and pickup notices all follow it."</p>
+        <span>— REGISTRAR, TWIN RIVERS ACADEMY</span>
+      </div>
+      <div class="proof-stats">
+        <div class="pstat"><span class="n">6.2 hrs</span><span class="l">saved per office, weekly</span></div>
+        <div class="pstat"><span class="n">98%</span><span class="l">absence notices sent same day</span></div>
+        <div class="pstat"><span class="n">3 wks</span><span class="l">to full rollout</span></div>
+        <div class="pstat"><span class="n">190+</span><span class="l">schools on Cohort</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    // Toggle Night Mode
-    function toggleNightMode() {
-        document.body.classList.toggle('night-mode');
-        const isNight = document.body.classList.contains('night-mode');
-        localStorage.setItem('theme', isNight ? 'night' : 'light');
-    }
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow2">PRICING</span>
+      <h2>Priced per student, not per module.</h2>
+      <p>Every plan includes attendance, scheduling, records, and messaging. Larger districts add gradebook and state reporting.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan">
+        <h3>Single Campus</h3>
+        <div class="price">$3<span style="font-size:15px;">/student</span></div>
+        <div class="per">billed annually</div>
+        <ul>
+          <li>Attendance & scheduling</li>
+          <li>Family notifications</li>
+          <li>Student records</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#" class="btn" style="border:1px solid var(--forest); text-align:center;">Talk to sales</a>
+      </div>
+      <div class="plan mid">
+        <h3>District</h3>
+        <div class="price">$5<span style="font-size:15px;">/student</span></div>
+        <div class="per">billed annually</div>
+        <ul>
+          <li>Everything in Single Campus</li>
+          <li>Gradebook & report cards</li>
+          <li>State reporting exports</li>
+          <li>Multi-school scheduling</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn btn-coral" style="text-align:center;">Get a demo</a>
+      </div>
+      <div class="plan">
+        <h3>Enterprise</h3>
+        <div class="price">Custom</div>
+        <div class="per">5,000+ students</div>
+        <ul>
+          <li>Everything in District</li>
+          <li>SIS data migration</li>
+          <li>Dedicated onboarding</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="#" class="btn" style="border:1px solid var(--forest); text-align:center;">Contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    // Apply Saved Theme or Auto Time
-    function applyTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        const hour = new Date().getHours();
-        if (savedTheme === 'night' || (savedTheme === null && (hour >= 19 || hour < 6))) {
-            document.body.classList.add('night-mode');
-        }
-    }
-    applyTheme();
-</script>
+<section class="cta">
+  <div class="wrap">
+    <h2>See your own school's calendar in Cohort.</h2>
+    <p>We'll load your real bell schedule and section list for the demo — not a sample district.</p>
+    <a href="#" class="btn btn-solid">Get a demo</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="logo"><span class="logo-mark">C</span> Cohort</div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>PRODUCT</h4>
+          <a href="#features">Attendance</a>
+          <a href="#features">Gradebook</a>
+          <a href="#features">Scheduling</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+        <div class="foot-col">
+          <h4>COMPANY</h4>
+          <a href="#">About</a>
+          <a href="#">Schools we work with</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="foot-col">
+          <h4>SUPPORT</h4>
+          <a href="#">Help center</a>
+          <a href="#">Privacy</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Cohort, Inc.</span>
+      <span class="mono">One calendar. The whole school year.</span>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
