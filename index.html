@@ -318,11 +318,30 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
                     <li><a class="nav-link load-in-frame" href="group_performance_iframe.php" target="page_frame">Academic Family</a></li>
                     
                 </ul>
+				
+				<li class="nav-item">
+            <a href="#menuKuu" data-bs-toggle="collapse" class="nav-link">
+                <span><i class="bi bi-menu-button-wide icon-left"></i> Usajili </span> 
+                <i class="bi bi-chevron-down"></i>
+            </a>
+            <div class="collapse" id="menuKuu" data-bs-parent="#sidebar">
+                <ul class="nav flex-column">
+                    <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html" target="page_frame"> Usajili </a></li>
+                    <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/taarifa_usajili.php" target="page_frame"> Shule zilizokamilisha usajili</a></li>
+                    <li><a class="nav-link load-in-frame" href="students_list.php" target="page_frame">View Report</a></li>
+                </ul>
+            </div>
+        </li>
+				
+				
             </div>
         </li>
         <li class="nav-item"><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/ludewa" target="page_frame"><span><i class="bi bi-globe icon-left"></i> Ludewa Portal</span></a></li>
         
     </ul>
+	
+	
+	
 </nav>
 
 <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
