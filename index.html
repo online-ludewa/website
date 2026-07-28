@@ -1,575 +1,170 @@
-<?php
-session_start();
-
-// Kagua kama huyu mtu amepitia geti kuu la umawanjo.ac.tz na ana session hai
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
-    // Kama hana, mfukuze arudi kwenye ukurasa wa login!
-    header("Location: https://umawanjo.ac.tz");
-    exit();
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title> Ludewa | Dashboard</title>
-
-    <link rel="icon" type="image/x-icon" href="https://www.necta.go.tz/img/favicon.ico">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-
-    <style>
-        /* ===== GENERAL ===== */
-        :root {
-            --header-bg: #007a33;
-            --nav-bg: #006633;
-            --accent-color: #ffcc00;
-        }
-
-        body {
-            font-family: "Open Sans", sans-serif;
-            color: #333;
-            background-color: #f5f6fa;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            transition: all 0.5s ease;
-        }
-
-        /* ===== TOP HEADER ===== */
-        #top-header {
-            background: var(--header-bg);
-            padding: 10px 0;
-            color: white;
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            z-index: 1100;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        
-        #top-header h4 {
-            text-align: center;
-            font-weight: 800;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            margin: 0;
-            font-size: 1.3rem;
-            line-height: 1.2;
-        }
-        
-        #top-header h5 {
-            text-align: center;
-            font-weight: 600;
-            color: #fff;
-            margin-top: 5px;
-            font-size: 1rem;
-            margin-bottom: 0;
-        }
-        
-        #top-header img.logo-img { height: 75px; width: auto; }
-
-        /* ===== FLAG ANIMATION ===== */
-        .flag-wrapper {
-            perspective: 1000px;
-            display: inline-block;
-        }
-        .tz-flag {
-            height: 70px;
-            width: auto;
-            transform-origin: left center;
-            animation: tzWave 2.4s infinite ease-in-out;
-            filter: drop-shadow(3px 6px 8px rgba(0,0,0,0.45));
-        }
-        @keyframes tzWave {
-            0%   { transform: rotateY(0deg) rotateZ(0deg); }
-            20%  { transform: rotateY(-25deg) rotateZ(2deg); }
-            50%  { transform: rotateY(0deg) rotateZ(0deg); }
-            80%  { transform: rotateY(25deg) rotateZ(-2deg); }
-            100% { transform: rotateY(0deg) rotateZ(0deg); }
-        }
-
-        /* ===== LEFT RESPONSIVE SIDEBAR ===== */
-        #sidebar {
-            position: fixed;
-            top: 105px;
-            left: 0;
-            width: 260px;
-            height: calc(100vh - 105px);
-            background: var(--nav-bg);
-            overflow-y: auto;
-            transition: all 0.3s ease;
-            z-index: 1040;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-
-        #sidebar::-webkit-scrollbar { width: 6px; }
-        #sidebar::-webkit-scrollbar-thumb { background-color: #004d26; border-radius: 4px; }
-
-        .sidebar-menu .nav-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .sidebar-menu .nav-link {
-            color: #fff;
-            font-size: 15px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: 0.3s;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .sidebar-menu .nav-link:hover, .sidebar-menu .nav-link.active {
-            background: #004d26;
-            color: var(--accent-color);
-        }
-        .sidebar-menu .nav-link i.icon-left { margin-right: 12px; font-size: 18px; }
-        
-        .sidebar-menu .collapse { display: none; }
-        .sidebar-menu .collapse.show { display: block; }
-        .sidebar-menu .collapse .nav-link {
-            padding-left: 50px;
-            font-size: 14px;
-            background: rgba(0, 0, 0, 0.15);
-        }
-
-        /* ===== MAIN CONTENT WRAPPER ===== */
-        #main-content {
-            margin-left: 260px;
-            padding-top: 105px;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Iframe Styles */
-        #page-frame {
-            display: none;
-            width: 100%;
-            height: calc(100vh - 105px);
-            border: none;
-            background: #fff;
-            flex-grow: 1;
-        }
-
-        /* Dashboard View Container */
-        #dashboard-view {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ===== PRINT BUTTON STYLES ===== */
-        #print-iframe-btn {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1050;
-            background-color: var(--header-bg);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #print-iframe-btn:hover {
-            background-color: var(--accent-color);
-            color: #333;
-            transform: translateY(-3px);
-        }
-        #print-iframe-btn i {
-            margin-right: 8px;
-        }
-
-        /* Night Mode Icon & Toggle Button */
-        .mode-toggle { cursor: pointer; font-size: 24px; color: var(--accent-color); }
-        .sidebar-toggle-btn {
-            background: transparent;
-            border: none;
-            color: var(--accent-color);
-            font-size: 30px;
-            display: none;
-        }
-        .sidebar-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1030;
-            display: none;
-        }
-
-        /* ===== HERO SECTION ===== */
-        #hero { width: 100%; height: 50vh; }
-        #hero .carousel-item {
-            height: 50vh;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-        #hero .carousel-item::before {
-            content: ""; position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.5);
-        }
-        #hero .carousel-content {
-            position: absolute; bottom: 15%; left: 5%;
-            background: rgba(0, 0, 0, 0.65);
-            padding: 20px; border-radius: 10px; color: #fff; max-width: 500px; z-index: 2;
-        }
-
-        /* ===== QUICK ACCESS WIDGETS ===== */
-        #content-area { padding: 40px 0; }
-        .widget-card {
-            background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px; margin-bottom: 25px;
-        }
-        .widget-card h5 { color: var(--header-bg); font-weight: bold; border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; margin-bottom: 15px; }
-        .widget-card ul { list-style: none; padding: 0; }
-        .widget-card ul li { padding: 8px 0; border-bottom: 1px solid #eee; }
-        .widget-card ul li a { text-decoration: none; color: #004d26; transition: 0.3s; display: block; }
-        .widget-card ul li a:hover { color: var(--accent-color); transform: translateX(5px); }
-
-        /* ===== NIGHT MODE ===== */
-        body.night-mode { background-color: #0b1120; color: #cbd5e1; }
-        body.night-mode .widget-card, body.night-mode .card, body.night-mode #sidebar { background: #1e293b !important; color: #f8fafc !important; }
-        body.night-mode .widget-card h5, body.night-mode #top-header h4 { color: #fbbf24 !important; }
-        body.night-mode .widget-card ul li { border-bottom: 1px solid #334155; }
-        body.night-mode .widget-card ul li a { color: #94a3b8; }
-        body.night-mode .sidebar-menu .nav-link { border-bottom: 1px solid #334155; }
-        body.night-mode .sidebar-menu .collapse .nav-link { background: rgba(0, 0, 0, 0.3); }
-        body.night-mode #page-frame { background: #0b1120; }
-
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 992px) {
-            #top-header { padding: 5px 0; }
-            #top-header img.logo-img { height: 50px; }
-            .tz-flag { height: 45px; }
-            #top-header h4 { font-size: 1rem; }
-            #top-header h5 { font-size: 0.8rem; }
-
-            #sidebar { left: -260px; top: 85px; height: calc(100vh - 85px); }
-            #sidebar.show { left: 0; }
-            #main-content { margin-left: 0; padding-top: 85px; }
-            #page-frame { height: calc(100vh - 85px); }
-            
-            .sidebar-toggle-btn { display: inline-block; }
-            .sidebar-overlay.show { display: block; top: 85px; height: calc(100vh - 85px); }
-            
-            #print-iframe-btn { bottom: 20px; right: 20px; font-size: 14px; padding: 10px 20px; }
-        }
-
-        @media (max-width: 768px) {
-            #top-header img.logo-img { height: 40px; }
-            .tz-flag { height: 35px; }
-            #top-header h4 { font-size: 0.85rem; margin-bottom: 2px; }
-            #top-header h5 { font-size: 0.7rem; font-weight: 400; }
-            
-            #sidebar { top: 75px; height: calc(100vh - 75px); }
-            #main-content { padding-top: 75px; }
-            #page-frame { height: calc(100vh - 75px); }
-            .sidebar-overlay.show { top: 75px; height: calc(100vh - 75px); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Information System</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f4f6f9;color:#333}
+header{background:#0d47a1;color:#fff;padding:15px 8%}
+nav{display:flex;justify-content:space-between;align-items:center}
+nav ul{display:flex;list-style:none}
+nav ul li{margin-left:20px}
+nav ul li a{color:#fff;text-decoration:none}
+.hero{
+background:linear-gradient(rgba(13,71,161,.8),rgba(13,71,161,.8)),
+url("https://picsum.photos/1200/700");
+background-size:cover;
+background-position:center;
+color:#fff;
+text-align:center;
+padding:90px 20px;
+}
+.hero h1{font-size:42px}
+.hero p{margin:20px auto;max-width:700px}
+.btn{
+display:inline-block;
+padding:12px 25px;
+background:#ff9800;
+color:#fff;
+text-decoration:none;
+border-radius:5px;
+}
+section{padding:60px 8%}
+.title{text-align:center;margin-bottom:40px;color:#0d47a1}
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+.card{
+background:#fff;
+padding:25px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,.1);
+text-align:center;
+}
+.card h3{margin:15px 0;color:#0d47a1}
+.about{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+align-items:center;
+}
+.about img{
+width:100%;
+border-radius:10px;
+}
+.contact{
+background:#0d47a1;
+color:#fff;
+text-align:center;
+}
+footer{
+background:#222;
+color:#fff;
+text-align:center;
+padding:15px;
+}
+@media(max-width:768px){
+nav{flex-direction:column}
+nav ul{margin-top:15px}
+.about{grid-template-columns:1fr}
+.hero h1{font-size:30px}
+}
+</style>
 </head>
-
 <body>
 
-<!-- TOP HEADER -->
-<section id="top-header">
-    <div class="container-fluid px-3"> 
-        <div class="row text-center align-items-center justify-content-between">
-            <div class="col-3 col-md-3 text-start ps-1 d-flex align-items-center">
-                <button class="sidebar-toggle-btn me-2" onclick="toggleSidebar()">
-                    <i class="bi bi-list"></i>
-                </button>
-                <img src="https://www.necta.go.tz/img/emblem.png" class="logo-img" alt="Emblem">
-            </div>
-            
-            <div class="col-6 col-md-6 px-0">
-                <h4 class="d-none d-sm-block">THE PRIME MINISTER'S OFFICE</h4>
-                <h4 class="d-block d-sm-none">REGIONAL ADMINISTRATIVE AND LOCAL GOVERNMENT</h4> 
-                <h5>LUDEWA PORTAL</h5>
-            </div>
-            
-            <div class="col-3 col-md-3 text-end pe-1 d-flex align-items-center justify-content-end">
-                <i class="bi bi-moon-stars-fill mode-toggle me-3" onclick="toggleNightMode()"></i>
-                <div class="flag-wrapper">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Flag_of_Tanzania.svg" alt="Tanzania Flag" class="tz-flag">
-                </div>
-            </div>
-        </div>
-    </div>
+<header>
+<nav>
+
+<ul>
+<li><a href="https://umawanjo.ac.tz/njombe/github_njombe.html">Home</a></li>
+<li><a href="#">About</a></li>
+<li><a href="#">Features</a></li>
+<li><a href="#">Contact</a></li>
+<li><a href="https://umawanjo.ac.tz/njombe/login.php">Login</a></li>
+</ul>
+</nav>
+</header>
+
+<section class="hero">
+<h1>Ludewa School Information System</h1>
+<p>
+Manage Students, Teachers, Results, Attendance,
+Fees and Reports from one secure system.
+</p>
+<a href="https://umawanjo.ac.tz/njombe/login.php" class="btn">Login Now</a>
 </section>
 
-<!-- LEFT RESPONSIVE SIDEBAR (Sasa inatumia onclick kufungua menus kwa urahisi) -->
-<nav id="sidebar">
-    <ul class="nav flex-column sidebar-menu mb-auto">
-        <li class="nav-item">
-            <a id="dashboard-btn" class="nav-link active" style="cursor: pointer;">
-                <span><i class="bi bi-speedometer2 icon-left"></i> Dashboard</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="javascript:void(0);" onclick="toggleDropdownMenu('menuKuu')" class="nav-link">
-                <span><i class="bi bi-menu-button-wide icon-left"></i> Usajili </span> 
-                <i class="bi bi-chevron-down"></i>
-            </a>
-            <div class="collapse" id="menuKuu">
-                <ul class="nav flex-column">
-                    <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html" target="page_frame"> Usajili </a></li>
-                    <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/taarifa_usajili.php" target="page_frame"> Shule zilizokamilisha usajili</a></li>
-                    <li><a class="nav-link load-in-frame" href="students_list.php" target="page_frame">View Report</a></li>
-                </ul>
-            </div>
-        </li>
-        
-        <li class="nav-item">
-            <a href="javascript:void(0);" onclick="toggleDropdownMenu('resultsMenu')" class="nav-link">
-                <span><i class="bi bi-bar-chart icon-left"></i> Results</span> 
-                <i class="bi bi-chevron-down"></i>
-            </a>
-            <div class="collapse" id="resultsMenu">
-                <ul class="nav flex-column">
-                    <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/results.php" target="page_frame">Results</a></li>
-                    <li><a class="nav-link load-in-frame" href="group_performance_iframe.php" target="page_frame">Academic Family</a></li>
-                </ul>
-            </div>
-        </li>
-        
-        <li class="nav-item">
-            <a href="javascript:void(0);" onclick="toggleDropdownMenu('menuKuu2')" class="nav-link">
-                <span><i class="bi bi-folder2-open icon-left"></i> Orodha Nyingine </span> 
-                <i class="bi bi-chevron-down"></i>
-            </a>
-            <div class="collapse" id="menuKuu2">
-                <ul class="nav flex-column">
-                    <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html" target="page_frame"> Usajili </a></li>
-                    <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/taarifa_usajili.php" target="page_frame"> Shule zilizokamilisha usajili</a></li>
-                    <li><a class="nav-link load-in-frame" href="students_list.php" target="page_frame">View Report</a></li>
-                </ul>
-            </div>
-        </li>
-        
-        <li class="nav-item">
-            <a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/ludewa" target="page_frame">
-                <span><i class="bi bi-globe icon-left"></i> Ludewa Portal</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+<section>
+<h2 class="title">System Features</h2>
+<div class="cards">
 
-<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="card">
+<h3>Students</h3>
+<p>Register and manage student information.</p>
+</div>
 
-<!-- MAIN CONTENT WRAPPER -->
-<div id="main-content">
-    
-    <!-- IFRAME YETU -->
-    <iframe name="page_frame" id="page-frame"></iframe>
+<div class="card">
+<h3>Results</h3>
+<p>Enter marks and print examination results.</p>
+</div>
 
-    <!-- PRINT BUTTON YETU -->
-    <button id="print-iframe-btn" onclick="printIframe()" title="Print Iframe Content">
-        <i class="bi bi-printer"></i> Fungua & Print
-    </button>
+<div class="card">
+<h3>Attendance</h3>
+<p>Track daily student attendance.</p>
+</div>
 
-    <!-- DASHBOARD YETU -->
-    <div id="dashboard-view">
-        <section id="hero">
-            <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active" style="background-image: url('ludewa_banner1.jpg'); background-color: #333;">
-                        <div class="carousel-content animate__animated animate__fadeInUp">
-                            <h2>Welcome to UBSS Website</h2>
-                            <p>Official site of Umawanjo Boys' Secondary School Examination Portal.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<div class="card">
+<h3>Teachers</h3>
+<p>Manage teachers and subjects.</p>
+</div>
 
-        <section id="content-area">
-            <div class="container-fluid px-4">
-                <div class="row">
-                    <aside class="col-xl-3 col-lg-4 mb-4">
-                        <div class="widget-card h-100">
-                            <h5>Quick Access</h5>
-                            <ul>
-                                <li><a href="https://ol.tie.go.tz/" class="load-in-frame" target="page_frame"><i class="bi bi-book"></i> Tovuti ya Vitabu (TIE)</a></li>
-                                <li><a href="tathimini.php" class="load-in-frame" target="page_frame"><i class="bi bi-cloud-arrow-up"></i> Tathimini ya Mitihani</a></li>
-                                <li><a href="https://matokeo.necta.go.tz/" class="load-in-frame" target="page_frame"><i class="bi bi-graph-up"></i> NECTA</a></li>
-                                <li><a href="count_grades.php" class="load-in-frame" target="page_frame"><i class="bi bi-graph-up"></i> Count Grades</a></li>
-                                <li><a href="https://web.whatsapp.com/" target="_blank"><i class="bi bi-whatsapp"></i> Whatsapp</a></li>
-                            </ul>
-                        </div>
-                    </aside>
+<div class="card">
+<h3>Fees</h3>
+<p>Monitor school fee payments.</p>
+</div>
 
-                    <main class="col-xl-6 col-lg-8 mb-4">
-                        <div class="section-title text-center mb-4"><h2>News & Announcements</h2></div>
-                        <div class="card shadow-sm border-0 mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title text-success"><i class="bi bi-megaphone"></i> Exam Timetable Released</h5>
-                                <p class="card-text text-muted">The timetable for the upcoming school examinations has been released. View details in the portal.</p>
-                            </div>
-                        </div>
-                        <div class="card shadow-sm border-0 mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title text-success"><i class="bi bi-clipboard2-check"></i> Results Published</h5>
-                                <p class="card-text text-muted">The October test results have been released. Check your performance on your student account.</p>
-                            </div>
-                        </div>
-                    </main>
+<div class="card">
+<h3>Reports</h3>
+<p>Generate printable reports instantly.</p>
+</div>
 
-                    <aside class="col-xl-3 col-lg-12 mb-4">
-                        <div class="widget-card h-100">
-                            <h5>Upcoming Events</h5>
-                            <ul>
-                                <li><a href="#"><i class="bi bi-calendar-event"></i> Teachers Workshop - Nov 15</a></li>
-                                <li><a href="export-tables_and_contents.php" class="load-in-frame" target="page_frame"><i class="bi bi-calendar-check"></i> Mock Exams - Dec 2</a></li>
-                                <li><a href="https://anyonike.github.io/website/Businessu/FM.html" class="load-in-frame" target="page_frame"><i class="bi bi-broadcast"></i> Radios</a></li>
-                                <li><a href="https://igunda.infinityfree.me/myapp/students.php?i=1" class="load-in-frame" target="page_frame"><i class="bi bi-person-badge"></i> Pre FI</a></li>
-                                <li><a href="https://ubss.byethost11.com/school/index.php" class="load-in-frame" target="page_frame"><i class="bi bi-hourglass-split"></i> In Progress</a></li>
-                            </ul>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-        </section>
+</div>
+</section>
 
-        <footer id="footer" class="text-white py-4 mt-auto" style="background: #004d26;">
-            <div class="container text-center">
-                <p class="mb-0">&copy; 2026 <strong>UMAWANJO</strong>. All Rights Reserved.</p>
-                <small>Njombe Ludewa, Tanzania | pmwasyika@gmail.com</small>
-            </div>
-        </footer>
-    </div>
-    
-</div> <!-- END MAIN CONTENT -->
+<section>
+<h2 class="title">About SIS</h2>
+<div class="about">
+<div>
+<h3>Simple, Fast and Secure</h3>
+<p>
+School Information System helps schools manage
+academic and administrative activities from one
+place. It improves accuracy, saves time and
+provides instant reports for administrators,
+teachers and students.
+</p>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-<script>
-    AOS.init();
+<div>
+<img src="https://picsum.photos/600/400" alt="School">
+</div>
+</div>
+</section>
 
-    // CUSTOM FALLBACK KWA AJILI YA KUFUNGUA MENUS KWENYE BROWSERS ZOTE
-    function toggleDropdownMenu(menuId) {
-        var menu = document.getElementById(menuId);
-        if(menu) {
-            if(menu.classList.contains('show')) {
-                menu.classList.remove('show');
-            } else {
-                // Funga menus zote zilizowazi kwanza (Kama unataka Accordion style)
-                var allMenus = document.querySelectorAll('#sidebar .collapse.show');
-                for(var k = 0; k < allMenus.length; k++) {
-                    allMenus[k].classList.remove('show');
-                }
-                menu.classList.add('show');
-            }
-        }
-    }
+<section class="contact">
+<h2>Contact Us</h2>
+<p>Email: pmwasyika@gmail.com</p>
+<p>Phone: +255 765 883 980</p>
+</section>
 
-    // TUNAANDIKA JAVASCRIPT KWA MTINDO WA KIZAMANI (ES5) ILI KUZUIA ERRORS KWENYE EDGE LEGACY / IE
-    var dashboardView = document.getElementById('dashboard-view');
-    var pageFrame = document.getElementById('page-frame');
-    var printBtn = document.getElementById('print-iframe-btn');
-    var frameLinks = document.querySelectorAll('.load-in-frame');
-    var dashboardBtn = document.getElementById('dashboard-btn');
-    var navLinks = document.querySelectorAll('.sidebar-menu .nav-link');
-    var currentIframeUrl = "";
+<footer>
+&copy; 2026 School Information System. All Rights Reserved.
+</footer>
 
-    // Loop kwa ajili ya Links zinazofunguka kwenye Iframe
-    for (var i = 0; i < frameLinks.length; i++) {
-        frameLinks[i].addEventListener('click', function(e) {
-            currentIframeUrl = this.href;
-
-            dashboardView.style.display = 'none';
-            pageFrame.style.display = 'block';
-            printBtn.style.display = 'block';
-
-            // Ondoa 'active' class
-            for (var j = 0; j < navLinks.length; j++) {
-                navLinks[j].classList.remove('active');
-            }
-            
-            if(this.classList.contains('nav-link')) {
-                this.classList.add('active');
-            }
-
-            if(window.innerWidth <= 992) {
-                toggleSidebar();
-            }
-        });
-    }
-
-    // Dashboard Button Click
-    if(dashboardBtn) {
-        dashboardBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            pageFrame.style.display = 'none';
-            printBtn.style.display = 'none';
-            pageFrame.src = "";
-            currentIframeUrl = "";
-            dashboardView.style.display = 'flex';
-
-            for (var j = 0; j < navLinks.length; j++) {
-                navLinks[j].classList.remove('active');
-            }
-            this.classList.add('active');
-
-            if(window.innerWidth <= 992) {
-                toggleSidebar();
-            }
-        });
-    }
-
-    // Function ya Kitufe cha Print (Inafungua Tab Mpya Moja kwa Moja)
-    function printIframe() {
-        if (currentIframeUrl && currentIframeUrl !== "") {
-            window.open(currentIframeUrl, '_blank');
-        } else {
-            alert("Tafadhali fungua ukurasa kwanza kwenye menu kabla ya ku-print.");
-        }
-    }
-
-    // Toggle Mobile Sidebar
-    function toggleSidebar() {
-        var sidebar = document.getElementById('sidebar');
-        var overlay = document.querySelector('.sidebar-overlay');
-        
-        if(sidebar) {
-            if(sidebar.classList.contains('show')) sidebar.classList.remove('show');
-            else sidebar.classList.add('show');
-        }
-        if(overlay) {
-            if(overlay.classList.contains('show')) overlay.classList.remove('show');
-            else overlay.classList.add('show');
-        }
-    }
-
-    // Toggle Night Mode
-    function toggleNightMode() {
-        document.body.classList.toggle('night-mode');
-        var isNight = document.body.classList.contains('night-mode');
-        localStorage.setItem('theme', isNight ? 'night' : 'light');
-    }
-
-    // Apply Saved Theme or Auto Time
-    function applyTheme() {
-        var savedTheme = localStorage.getItem('theme');
-        var hour = new Date().getHours();
-        if (savedTheme === 'night' || (savedTheme === null && (hour >= 19 || hour < 6))) {
-            document.body.classList.add('night-mode');
-        }
-    }
-    applyTheme();
-</script>
 </body>
 </html>
