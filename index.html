@@ -375,7 +375,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
 
     <!-- PRINT BUTTON YETU KWA AJILI YA IFRAME -->
     <button id="print-iframe-btn" onclick="printIframe()" title="Print Iframe Content">
-        <i class="bi bi-printer"></i> Print
+        <i class="bi bi-printer"></i> Fungua & Print
     </button>
 
     <!-- DASHBOARD YETU: Itaonekana mwanzoni, na kujificha ufunguapo page nyingine -->
@@ -508,23 +508,13 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
         }
     });
 
-    // Function ya Ku-print Iframe (pamoja na marekebisho ya CORS)
+    // Function ya Kitufe cha Print (Inafungua Tab Mpya Moja kwa Moja)
     function printIframe() {
-        try {
-            // Focus kwenye iframe kisha ite command ya print (ikibaki kwenye same domain)
-            pageFrame.contentWindow.focus();
-            pageFrame.contentWindow.print();
-        } catch (e) {
-            // Sasa tunatumia variable yetu 'currentIframeUrl' badala ya 'pageFrame.src'
-            if (currentIframeUrl && currentIframeUrl !== "") {
-                let userConfirm = confirm("Kivinjari kimezuia ku-print moja kwa moja kwa sababu za kiusalama (Domain Tofauti).\n\nJe, unakubali kufungua ukurasa huu kwenye tab mpya ili uweze ku-print?");
-                
-                if (userConfirm) {
-                    window.open(currentIframeUrl, '_blank');
-                }
-            } else {
-                alert("Tafadhali fungua ukurasa kwanza kwenye menu kabla ya ku-print.");
-            }
+        if (currentIframeUrl && currentIframeUrl !== "") {
+            // Fungua ukurasa kwenye tab mpya moja kwa moja bila kuuliza
+            window.open(currentIframeUrl, '_blank');
+        } else {
+            alert("Tafadhali fungua ukurasa kwanza kwenye menu kabla ya ku-print.");
         }
     }
 
