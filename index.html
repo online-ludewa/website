@@ -350,7 +350,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
         </li>
         <li class="nav-item">
             <a href="#menuKuu2" data-bs-toggle="collapse" class="nav-link">
-                <span><i class="bi bi-menu-button-wide icon-left"></i> Orodha Nyingine </span> 
+                <span><i class="bi bi-folder2-open icon-left"></i> Orodha Nyingine </span> 
                 <i class="bi bi-chevron-down"></i>
             </a>
             <div class="collapse" id="menuKuu2" data-bs-parent="#sidebar">
@@ -501,16 +501,25 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
         }
     });
 
-    // Function ya Ku-print Iframe
+    // Function ya Ku-print Iframe (pamoja na marekebisho ya CORS)
     function printIframe() {
         try {
-            // Focus kwenye iframe kisha ite command ya print
+            // Focus kwenye iframe kisha ite command ya print (ikibaki kwenye same domain)
             pageFrame.contentWindow.focus();
             pageFrame.contentWindow.print();
         } catch (e) {
-            // Endapo link inatoka nje ya server yako (cross-origin), browser itazuia.
-            alert("Samahani, ukurasa huu unatoka nje ya mfumo (External Site) hivyo hauwezi ku-printiwa moja kwa moja kutokea hapa kutokana na sababu za kiusalama za kivinjari (CORS). Tafadhali fungua link husika kwenye tab mpya ili kuprint.");
-            console.error("Print Error: ", e);
+            // Kama zikiwa domain tofauti (CORS), Browser itakataa, hivyo tutatumia njia mbadala
+            let iframeUrl = pageFrame.src;
+            
+            if (iframeUrl && iframeUrl !== "") {
+                let userConfirm = confirm("Kivinjari kimezuia ku-print moja kwa moja kwa sababu za kiusalama (Domain Tofauti).\n\nJe, unakubali kufungua ukurasa huu kwenye tab mpya ili uweze ku-print?");
+                
+                if (userConfirm) {
+                    window.open(iframeUrl, '_blank');
+                }
+            } else {
+                alert("Tafadhali fungua ukurasa kwanza kwenye menu kabla ya ku-print.");
+            }
         }
     }
 
