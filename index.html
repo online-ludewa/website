@@ -464,9 +464,15 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
     const dashboardBtn = document.getElementById('dashboard-btn');
     const navLinks = document.querySelectorAll('.sidebar-menu .nav-link');
 
+    // Variable ya kuhifadhi link ya sasa inayofunguka
+    let currentIframeUrl = "";
+
     // Mtu akibofya link inayoenda kwenye iframe
     frameLinks.forEach(link => {
         link.addEventListener('click', function() {
+            // Hifadhi link (URL) ya sasa mara tu anapobofya menu
+            currentIframeUrl = this.href;
+
             // Ficha dashboard, onesha iframe na print button
             dashboardView.style.display = 'none';
             pageFrame.style.display = 'block';
@@ -491,6 +497,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
         pageFrame.style.display = 'none';
         printBtn.style.display = 'none'; // Ficha print button
         pageFrame.src = ""; // Stop iframe loading
+        currentIframeUrl = ""; // Futa link iliyohifadhiwa turudipo mwanzo
         dashboardView.style.display = 'flex';
 
         navLinks.forEach(nl => nl.classList.remove('active'));
@@ -508,14 +515,12 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
             pageFrame.contentWindow.focus();
             pageFrame.contentWindow.print();
         } catch (e) {
-            // Kama zikiwa domain tofauti (CORS), Browser itakataa, hivyo tutatumia njia mbadala
-            let iframeUrl = pageFrame.src;
-            
-            if (iframeUrl && iframeUrl !== "") {
+            // Sasa tunatumia variable yetu 'currentIframeUrl' badala ya 'pageFrame.src'
+            if (currentIframeUrl && currentIframeUrl !== "") {
                 let userConfirm = confirm("Kivinjari kimezuia ku-print moja kwa moja kwa sababu za kiusalama (Domain Tofauti).\n\nJe, unakubali kufungua ukurasa huu kwenye tab mpya ili uweze ku-print?");
                 
                 if (userConfirm) {
-                    window.open(iframeUrl, '_blank');
+                    window.open(currentIframeUrl, '_blank');
                 }
             } else {
                 alert("Tafadhali fungua ukurasa kwanza kwenye menu kabla ya ku-print.");
