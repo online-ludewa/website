@@ -12,8 +12,9 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Ludewa | Dashboard</title>
+    <title>UMAWANJO | Dashboard</title>
 
     <link rel="icon" type="image/x-icon" href="https://www.necta.go.tz/img/favicon.ico">
 
@@ -120,13 +121,16 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
             justify-content: space-between;
             transition: 0.3s;
             cursor: pointer;
+            text-decoration: none;
         }
-        .sidebar-menu .nav-link:hover, .sidebar-menu .nav-link.active, .sidebar-menu .nav-link[aria-expanded="true"] {
+        .sidebar-menu .nav-link:hover, .sidebar-menu .nav-link.active {
             background: #004d26;
             color: var(--accent-color);
         }
         .sidebar-menu .nav-link i.icon-left { margin-right: 12px; font-size: 18px; }
         
+        .sidebar-menu .collapse { display: none; }
+        .sidebar-menu .collapse.show { display: block; }
         .sidebar-menu .collapse .nav-link {
             padding-left: 50px;
             font-size: 14px;
@@ -146,7 +150,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
 
         /* Iframe Styles */
         #page-frame {
-            display: none; /* Imefichwa kwa default */
+            display: none;
             width: 100%;
             height: calc(100vh - 105px);
             border: none;
@@ -163,7 +167,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
 
         /* ===== PRINT BUTTON STYLES ===== */
         #print-iframe-btn {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             bottom: 30px;
             right: 30px;
@@ -274,15 +278,6 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
             #page-frame { height: calc(100vh - 75px); }
             .sidebar-overlay.show { top: 75px; height: calc(100vh - 75px); }
         }
-
-        @media (max-width: 400px) {
-            #top-header h4 { font-size: 0.7rem; }
-            #top-header h5 { font-size: 0.6rem; }
-            #sidebar { top: 70px; height: calc(100vh - 70px); }
-            #main-content { padding-top: 70px; }
-            #page-frame { height: calc(100vh - 70px); }
-            .sidebar-overlay.show { top: 70px; height: calc(100vh - 70px); }
-        }
     </style>
 </head>
 
@@ -315,7 +310,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
     </div>
 </section>
 
-<!-- LEFT RESPONSIVE SIDEBAR -->
+<!-- LEFT RESPONSIVE SIDEBAR (Sasa inatumia onclick kufungua menus kwa urahisi) -->
 <nav id="sidebar">
     <ul class="nav flex-column sidebar-menu mb-auto">
         <li class="nav-item">
@@ -324,13 +319,12 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
             </a>
         </li>
         
-        <!-- MENU KUU -->
         <li class="nav-item">
-            <a role="button" data-bs-toggle="collapse" data-bs-target="#menuKuu" class="nav-link" aria-expanded="false">
+            <a href="javascript:void(0);" onclick="toggleDropdownMenu('menuKuu')" class="nav-link">
                 <span><i class="bi bi-menu-button-wide icon-left"></i> Usajili </span> 
                 <i class="bi bi-chevron-down"></i>
             </a>
-            <div class="collapse" id="menuKuu" data-bs-parent="#sidebar">
+            <div class="collapse" id="menuKuu">
                 <ul class="nav flex-column">
                     <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html" target="page_frame"> Usajili </a></li>
                     <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/taarifa_usajili.php" target="page_frame"> Shule zilizokamilisha usajili</a></li>
@@ -339,13 +333,12 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
             </div>
         </li>
         
-        <!-- RESULTS MENU -->
         <li class="nav-item">
-            <a role="button" data-bs-toggle="collapse" data-bs-target="#resultsMenu" class="nav-link" aria-expanded="false">
+            <a href="javascript:void(0);" onclick="toggleDropdownMenu('resultsMenu')" class="nav-link">
                 <span><i class="bi bi-bar-chart icon-left"></i> Results</span> 
                 <i class="bi bi-chevron-down"></i>
             </a>
-            <div class="collapse" id="resultsMenu" data-bs-parent="#sidebar">
+            <div class="collapse" id="resultsMenu">
                 <ul class="nav flex-column">
                     <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/results.php" target="page_frame">Results</a></li>
                     <li><a class="nav-link load-in-frame" href="group_performance_iframe.php" target="page_frame">Academic Family</a></li>
@@ -353,13 +346,12 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
             </div>
         </li>
         
-        <!-- ORODHA NYINGINE -->
         <li class="nav-item">
-            <a role="button" data-bs-toggle="collapse" data-bs-target="#menuKuu2" class="nav-link" aria-expanded="false">
+            <a href="javascript:void(0);" onclick="toggleDropdownMenu('menuKuu2')" class="nav-link">
                 <span><i class="bi bi-folder2-open icon-left"></i> Orodha Nyingine </span> 
                 <i class="bi bi-chevron-down"></i>
             </a>
-            <div class="collapse" id="menuKuu2" data-bs-parent="#sidebar">
+            <div class="collapse" id="menuKuu2">
                 <ul class="nav flex-column">
                     <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/maelekezo_mfumo.html" target="page_frame"> Usajili </a></li>
                     <li><a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/njombe/taarifa_usajili.php" target="page_frame"> Shule zilizokamilisha usajili</a></li>
@@ -368,9 +360,8 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
             </div>
         </li>
         
-        <!-- LUDEWA PORTAL -->
         <li class="nav-item">
-            <a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/ludewa" target="page_frame" style="cursor: pointer;">
+            <a class="nav-link load-in-frame" href="https://umawanjo.ac.tz/ludewa" target="page_frame">
                 <span><i class="bi bi-globe icon-left"></i> Ludewa Portal</span>
             </a>
         </li>
@@ -382,15 +373,15 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
 <!-- MAIN CONTENT WRAPPER -->
 <div id="main-content">
     
-    <!-- IFRAME YETU: Hapa ndipo pages zitafunguka -->
+    <!-- IFRAME YETU -->
     <iframe name="page_frame" id="page-frame"></iframe>
 
-    <!-- PRINT BUTTON YETU KWA AJILI YA IFRAME -->
+    <!-- PRINT BUTTON YETU -->
     <button id="print-iframe-btn" onclick="printIframe()" title="Print Iframe Content">
         <i class="bi bi-printer"></i> Fungua & Print
     </button>
 
-    <!-- DASHBOARD YETU: Itaonekana mwanzoni, na kujificha ufunguapo page nyingine -->
+    <!-- DASHBOARD YETU -->
     <div id="dashboard-view">
         <section id="hero">
             <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -468,62 +459,80 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
 <script>
     AOS.init();
 
-    // Utendaji wa Kuficha Dashboard na Kuonesha Iframe na Print Button
-    const dashboardView = document.getElementById('dashboard-view');
-    const pageFrame = document.getElementById('page-frame');
-    const printBtn = document.getElementById('print-iframe-btn');
-    const frameLinks = document.querySelectorAll('.load-in-frame');
-    const dashboardBtn = document.getElementById('dashboard-btn');
-    const navLinks = document.querySelectorAll('.sidebar-menu .nav-link');
+    // CUSTOM FALLBACK KWA AJILI YA KUFUNGUA MENUS KWENYE BROWSERS ZOTE
+    function toggleDropdownMenu(menuId) {
+        var menu = document.getElementById(menuId);
+        if(menu) {
+            if(menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            } else {
+                // Funga menus zote zilizowazi kwanza (Kama unataka Accordion style)
+                var allMenus = document.querySelectorAll('#sidebar .collapse.show');
+                for(var k = 0; k < allMenus.length; k++) {
+                    allMenus[k].classList.remove('show');
+                }
+                menu.classList.add('show');
+            }
+        }
+    }
 
-    // Variable ya kuhifadhi link ya sasa inayofunguka
-    let currentIframeUrl = "";
+    // TUNAANDIKA JAVASCRIPT KWA MTINDO WA KIZAMANI (ES5) ILI KUZUIA ERRORS KWENYE EDGE LEGACY / IE
+    var dashboardView = document.getElementById('dashboard-view');
+    var pageFrame = document.getElementById('page-frame');
+    var printBtn = document.getElementById('print-iframe-btn');
+    var frameLinks = document.querySelectorAll('.load-in-frame');
+    var dashboardBtn = document.getElementById('dashboard-btn');
+    var navLinks = document.querySelectorAll('.sidebar-menu .nav-link');
+    var currentIframeUrl = "";
 
-    // Mtu akibofya link inayoenda kwenye iframe
-    frameLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            // Hifadhi link (URL) ya sasa mara tu anapobofya menu
+    // Loop kwa ajili ya Links zinazofunguka kwenye Iframe
+    for (var i = 0; i < frameLinks.length; i++) {
+        frameLinks[i].addEventListener('click', function(e) {
             currentIframeUrl = this.href;
 
-            // Ficha dashboard, onesha iframe na print button
             dashboardView.style.display = 'none';
             pageFrame.style.display = 'block';
             printBtn.style.display = 'block';
 
-            // Ondoa 'active' class kwenye links zote, iweke kwenye hii iliyobofyewa
-            navLinks.forEach(nl => nl.classList.remove('active'));
+            // Ondoa 'active' class
+            for (var j = 0; j < navLinks.length; j++) {
+                navLinks[j].classList.remove('active');
+            }
+            
             if(this.classList.contains('nav-link')) {
                 this.classList.add('active');
             }
 
-            // Kama ni simu, ficha sidebar baada ya kubofya
             if(window.innerWidth <= 992) {
                 toggleSidebar();
             }
         });
-    });
+    }
 
-    // Mtu akibofya kitufe cha "Dashboard"
-    dashboardBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        pageFrame.style.display = 'none';
-        printBtn.style.display = 'none'; // Ficha print button
-        pageFrame.src = ""; // Stop iframe loading
-        currentIframeUrl = ""; // Futa link iliyohifadhiwa turudipo mwanzo
-        dashboardView.style.display = 'flex';
+    // Dashboard Button Click
+    if(dashboardBtn) {
+        dashboardBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            pageFrame.style.display = 'none';
+            printBtn.style.display = 'none';
+            pageFrame.src = "";
+            currentIframeUrl = "";
+            dashboardView.style.display = 'flex';
 
-        navLinks.forEach(nl => nl.classList.remove('active'));
-        this.classList.add('active');
+            for (var j = 0; j < navLinks.length; j++) {
+                navLinks[j].classList.remove('active');
+            }
+            this.classList.add('active');
 
-        if(window.innerWidth <= 992) {
-            toggleSidebar();
-        }
-    });
+            if(window.innerWidth <= 992) {
+                toggleSidebar();
+            }
+        });
+    }
 
     // Function ya Kitufe cha Print (Inafungua Tab Mpya Moja kwa Moja)
     function printIframe() {
         if (currentIframeUrl && currentIframeUrl !== "") {
-            // Fungua ukurasa kwenye tab mpya moja kwa moja bila kuuliza
             window.open(currentIframeUrl, '_blank');
         } else {
             alert("Tafadhali fungua ukurasa kwanza kwenye menu kabla ya ku-print.");
@@ -532,21 +541,30 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['active_database'])) {
 
     // Toggle Mobile Sidebar
     function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('show');
-        document.querySelector('.sidebar-overlay').classList.toggle('show');
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.querySelector('.sidebar-overlay');
+        
+        if(sidebar) {
+            if(sidebar.classList.contains('show')) sidebar.classList.remove('show');
+            else sidebar.classList.add('show');
+        }
+        if(overlay) {
+            if(overlay.classList.contains('show')) overlay.classList.remove('show');
+            else overlay.classList.add('show');
+        }
     }
 
     // Toggle Night Mode
     function toggleNightMode() {
         document.body.classList.toggle('night-mode');
-        const isNight = document.body.classList.contains('night-mode');
+        var isNight = document.body.classList.contains('night-mode');
         localStorage.setItem('theme', isNight ? 'night' : 'light');
     }
 
     // Apply Saved Theme or Auto Time
     function applyTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        const hour = new Date().getHours();
+        var savedTheme = localStorage.getItem('theme');
+        var hour = new Date().getHours();
         if (savedTheme === 'night' || (savedTheme === null && (hour >= 19 || hour < 6))) {
             document.body.classList.add('night-mode');
         }
