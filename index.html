@@ -3,523 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cohort — The school year, organized</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>School Information System</title>
 <style>
-  :root{
-    --forest:#1F3A33;
-    --forest-deep:#152722;
-    --cream:#F6F2E9;
-    --coral:#E2703A;
-    --slate:#4C6B8A;
-    --moss:#8AA084;
-    --charcoal:#26302B;
-    --line:rgba(38,48,43,0.12);
-    --line-dark:rgba(246,242,233,0.14);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--cream);
-    color:var(--charcoal);
-    font-family:'Work Sans', sans-serif;
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3{
-    font-family:'Space Grotesk', sans-serif;
-    font-weight:600;
-    letter-spacing:-0.015em;
-  }
-  .mono{ font-family:'JetBrains Mono', monospace; }
-  a{ color:inherit; text-decoration:none; }
-  img{ max-width:100%; display:block; }
-  .wrap{ max-width:1140px; margin:0 auto; padding:0 32px; }
-  @media (max-width:640px){ .wrap{padding:0 20px;} }
-  :focus-visible{ outline:2px solid var(--coral); outline-offset:3px; }
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
-  }
-
-  header{
-    position:sticky; top:0; z-index:50;
-    background:rgba(246,242,233,0.9);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  .nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:20px 32px;
-    max-width:1140px; margin:0 auto;
-  }
-  .logo{ display:flex; align-items:center; gap:9px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; }
-  .logo-mark{
-    width:22px; height:22px;
-    background:var(--coral);
-    border-radius:6px;
-    display:flex; align-items:center; justify-content:center;
-    color:var(--cream); font-size:12px; font-weight:700;
-    transform:rotate(-6deg);
-  }
-  .navlinks{ display:flex; gap:34px; font-size:14.5px; font-weight:500; }
-  .navlinks a{ opacity:0.7; transition:opacity .15s; }
-  .navlinks a:hover{ opacity:1; }
-  @media (max-width:820px){ .navlinks{display:none;} }
-  .navcta{ display:flex; align-items:center; gap:18px; }
-  .btn{
-    display:inline-block; padding:11px 22px;
-    border-radius:100px; font-size:14px; font-weight:600;
-    transition:transform .15s, background .15s, box-shadow .15s;
-  }
-  .btn-solid{ background:var(--forest); color:var(--cream); }
-  .btn-solid:hover{ transform:translateY(-1px); box-shadow:0 8px 20px -8px rgba(31,58,51,0.5); }
-  .btn-ghost{ opacity:0.75; padding-left:0; padding-right:0; }
-  .btn-ghost:hover{ opacity:1; }
-  .btn-coral{ background:var(--coral); color:var(--cream); }
-  .btn-coral:hover{ transform:translateY(-1px); box-shadow:0 8px 20px -8px rgba(226,112,58,0.55); }
-
-  .hero{
-    background:var(--forest);
-    color:var(--cream);
-    padding:80px 0 0;
-    overflow:hidden;
-  }
-  .hero-inner{ padding-bottom:64px; }
-  .hero-top{
-    display:grid;
-    grid-template-columns:1fr auto;
-    gap:40px;
-    align-items:start;
-    margin-bottom:56px;
-  }
-  @media (max-width:760px){ .hero-top{grid-template-columns:1fr;} }
-  .pill{
-    display:inline-flex; align-items:center; gap:8px;
-    background:rgba(246,242,233,0.1);
-    border:1px solid var(--line-dark);
-    padding:6px 14px; border-radius:100px;
-    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.02em;
-    color:var(--moss);
-    margin-bottom:24px;
-  }
-  .hero h1{
-    font-size:clamp(36px,5vw,58px);
-    line-height:1.06;
-    max-width:15ch;
-    margin-bottom:22px;
-  }
-  .hero h1 .accent{ color:var(--coral); }
-  .hero-sub{
-    font-size:17px;
-    color:rgba(246,242,233,0.72);
-    max-width:44ch;
-    margin-bottom:32px;
-  }
-  .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
-  .hero-stats{
-    display:grid; gap:20px;
-    padding-top:6px;
-  }
-  .hstat{ text-align:right; }
-  @media (max-width:760px){ .hstat{ text-align:left; } .hero-stats{ display:flex; gap:28px; } }
-  .hstat .num{ font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:600; color:var(--coral); display:block; }
-  .hstat .lbl{ font-size:12px; color:rgba(246,242,233,0.55); }
-
-  .timetable{
-    background:var(--forest-deep);
-    border:1px solid var(--line-dark);
-    border-radius:16px;
-    padding:22px;
-    margin-top:8px;
-  }
-  .tt-head{
-    display:flex; justify-content:space-between; align-items:center;
-    margin-bottom:16px;
-  }
-  .tt-head .title{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.04em; color:var(--moss); }
-  .tt-head .day{ font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(246,242,233,0.4); }
-  .tt-grid{ display:grid; gap:8px; }
-  .tt-block{
-    display:grid;
-    grid-template-columns:56px 1fr auto;
-    align-items:center;
-    gap:14px;
-    padding:12px 14px;
-    border-radius:9px;
-    font-size:13.5px;
-    opacity:0;
-    transform:translateY(6px);
-    animation:blockIn .5s ease forwards;
-  }
-  @keyframes blockIn{ to{opacity:1; transform:translateY(0);} }
-  .tt-block:nth-child(1){ background:rgba(226,112,58,0.16); animation-delay:.1s; }
-  .tt-block:nth-child(2){ background:rgba(76,107,138,0.22); animation-delay:.3s; }
-  .tt-block:nth-child(3){ background:rgba(138,160,132,0.18); animation-delay:.5s; }
-  .tt-block:nth-child(4){ background:rgba(226,112,58,0.16); animation-delay:.7s; }
-  .tt-time{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:rgba(246,242,233,0.6); }
-  .tt-room{ font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(246,242,233,0.45); }
-  .tt-name{ color:var(--cream); font-weight:500; }
-
-  .logostrip{
-    background:var(--forest);
-    border-top:1px solid var(--line-dark);
-    padding:26px 0 42px;
-  }
-  .logostrip .wrap{
-    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
-    font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(246,242,233,0.45);
-  }
-  .logostrip strong{ color:rgba(246,242,233,0.85); font-weight:500; }
-
-  section{ padding:96px 0; }
-  .section-head{ max-width:600px; margin-bottom:52px; }
-  .eyebrow2{
-    font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--coral);
-    letter-spacing:0.03em; margin-bottom:16px; display:block;
-  }
-  .section-head h2{ font-size:clamp(28px,3.2vw,38px); margin-bottom:14px; }
-  .section-head p{ font-size:16px; color:#4a564e; max-width:50ch; }
-
-  .bento{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    grid-auto-rows:auto;
-    gap:16px;
-  }
-  @media (max-width:900px){ .bento{ grid-template-columns:repeat(2,1fr); } }
-  @media (max-width:560px){ .bento{ grid-template-columns:1fr; } }
-  .bcard{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:28px;
-  }
-  .bcard.big{ grid-column:span 3; }
-  .bcard.wide{ grid-column:span 4; }
-  .bcard.narrow{ grid-column:span 2; }
-  @media (max-width:900px){ .bcard.big, .bcard.wide, .bcard.narrow{ grid-column:span 1; } }
-  .bcard .dot{
-    width:34px; height:34px; border-radius:9px;
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
-    margin-bottom:18px;
-    color:var(--cream);
-  }
-  .bcard:nth-child(1) .dot{ background:var(--coral); }
-  .bcard:nth-child(2) .dot{ background:var(--slate); }
-  .bcard:nth-child(3) .dot{ background:var(--forest); }
-  .bcard:nth-child(4) .dot{ background:var(--moss); }
-  .bcard:nth-child(5) .dot{ background:var(--coral); }
-  .bcard h3{ font-size:19px; margin-bottom:9px; font-weight:600; }
-  .bcard p{ font-size:14.5px; color:#4a564e; }
-
-  .flow-wrap{ background:var(--forest); color:var(--cream); }
-  .flow-row{
-    display:flex;
-    border-top:1px solid var(--line-dark);
-  }
-  .flow-row:last-child{ border-bottom:1px solid var(--line-dark); }
-  .flow-cell{
-    flex:1;
-    padding:28px 24px;
-    border-left:1px solid var(--line-dark);
-  }
-  .flow-cell:first-child{ border-left:none; }
-  @media (max-width:760px){ .flow-row{ flex-direction:column; } .flow-cell{ border-left:none; border-top:1px solid var(--line-dark); } .flow-row .flow-cell:first-child{ border-top:none; } }
-  .flow-cell .k{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--moss); margin-bottom:10px; display:block; }
-  .flow-cell h4{ font-family:'Space Grotesk',sans-serif; font-size:16.5px; font-weight:600; margin-bottom:8px; }
-  .flow-cell p{ font-size:13.5px; color:rgba(246,242,233,0.6); }
-
-  .proof-grid{
-    display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;
-  }
-  @media (max-width:860px){ .proof-grid{ grid-template-columns:1fr; } }
-  .proof-quote{
-    background:#fff; border:1px solid var(--line); border-radius:16px;
-    padding:36px;
-  }
-  .proof-quote p{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:20px; line-height:1.5; font-weight:500;
-    margin-bottom:20px;
-  }
-  .proof-quote span{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#6a7a6d; }
-  .proof-stats{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-  .pstat{
-    background:var(--forest); color:var(--cream);
-    border-radius:14px; padding:22px;
-  }
-  .pstat .n{ font-family:'Space Grotesk',sans-serif; font-size:30px; font-weight:700; color:var(--coral); display:block; }
-  .pstat .l{ font-size:12.5px; color:rgba(246,242,233,0.6); margin-top:4px; }
-
-  .pricing-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-  @media (max-width:900px){ .pricing-grid{ grid-template-columns:1fr; } }
-  .plan{
-    background:#fff; border:1px solid var(--line); border-radius:16px;
-    padding:30px 26px; display:flex; flex-direction:column;
-  }
-  .plan.mid{ background:var(--forest); color:var(--cream); border-color:var(--forest); }
-  .plan h3{ font-family:'JetBrains Mono',monospace; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:var(--coral); margin-bottom:16px; }
-  .plan.mid h3{ color:var(--moss); }
-  .plan .price{ font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:700; margin-bottom:4px; }
-  .plan .per{ font-size:13px; opacity:0.6; margin-bottom:22px; }
-  .plan ul{ list-style:none; margin-bottom:26px; flex:1; }
-  .plan li{ font-size:14px; padding:8px 0; display:flex; gap:10px; }
-  .plan li::before{ content:"✓"; color:var(--coral); font-weight:700; }
-
-  .cta{ background:var(--coral); color:var(--cream); text-align:center; }
-  .cta h2{ font-size:clamp(28px,3.6vw,40px); margin-bottom:16px; }
-  .cta p{ max-width:44ch; margin:0 auto 32px; opacity:0.9; font-size:16px; }
-  .cta .btn-solid{ background:var(--forest-deep); }
-
-  footer{ padding:52px 0 40px; background:var(--forest-deep); color:rgba(246,242,233,0.7); }
-  .foot-grid{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; padding-bottom:32px; margin-bottom:24px; border-bottom:1px solid var(--line-dark); }
-  .foot-grid .logo{ color:var(--cream); }
-  .foot-cols{ display:flex; gap:60px; flex-wrap:wrap; }
-  .foot-col h4{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.05em; color:var(--moss); margin-bottom:14px; }
-  .foot-col a{ display:block; font-size:14px; margin-bottom:10px; opacity:0.8; }
-  .foot-col a:hover{ opacity:1; }
-  .foot-bottom{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:13px; opacity:0.55; }
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f4f6f9;color:#333}
+header{background:#0d47a1;color:#fff;padding:15px 8%}
+nav{display:flex;justify-content:space-between;align-items:center}
+nav ul{display:flex;list-style:none}
+nav ul li{margin-left:20px}
+nav ul li a{color:#fff;text-decoration:none}
+.hero{
+background:linear-gradient(rgba(13,71,161,.8),rgba(13,71,161,.8)),
+url("https://picsum.photos/1200/700");
+background-size:cover;
+background-position:center;
+color:#fff;
+text-align:center;
+padding:90px 20px;
+}
+.hero h1{font-size:42px}
+.hero p{margin:20px auto;max-width:700px}
+.btn{
+display:inline-block;
+padding:12px 25px;
+background:#ff9800;
+color:#fff;
+text-decoration:none;
+border-radius:5px;
+}
+section{padding:60px 8%}
+.title{text-align:center;margin-bottom:40px;color:#0d47a1}
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+.card{
+background:#fff;
+padding:25px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,.1);
+text-align:center;
+}
+.card h3{margin:15px 0;color:#0d47a1}
+.about{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+align-items:center;
+}
+.about img{
+width:100%;
+border-radius:10px;
+}
+.contact{
+background:#0d47a1;
+color:#fff;
+text-align:center;
+}
+footer{
+background:#222;
+color:#fff;
+text-align:center;
+padding:15px;
+}
+@media(max-width:768px){
+nav{flex-direction:column}
+nav ul{margin-top:15px}
+.about{grid-template-columns:1fr}
+.hero h1{font-size:30px}
+}
 </style>
 </head>
 <body>
 
 <header>
-  <nav class="nav">
-    <a href="https://umawanjo.ac.tz/njombe/github_njombe.html" class="logo"><span class="logo-mark">H</span> Home </a>
-    <div class="navlinks">
-      <a href="https://umawanjo.ac.tz/njombe/github_njombe.html"> Home </a>
-      <a href="#flow">Workflow</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#proof">Schools</a>
-    </div>
-  </nav>
+<nav>
+<h2>SIS</h2>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">About</a></li>
+<li><a href="#">Features</a></li>
+<li><a href="#">Contact</a></li>
+<li><a href="login.php">Login</a></li>
+</ul>
+</nav>
 </header>
 
 <section class="hero">
-  <div class="wrap hero-inner">
-    <div class="hero-top">
-      <div>
-        <span class="pill">● Built for K–12 schools</span>
-        <h1>The school year, laid out like it actually runs — <span class="accent">period by period.</span></h1>
-        <p class="hero-sub">Cohort keeps attendance, schedules, and grades on one shared calendar, so nothing gets managed twice and nobody's chasing a spreadsheet at 4pm.</p>
-        <div class="hero-actions">
-          <a href="#pricing" class="btn btn-coral">Get a demo</a>
-          <a href="#flow" class="btn btn-ghost" style="color:var(--cream);">See a school day →</a>
-        </div>
-      </div>
-      <div class="hero-stats">
-        <div class="hstat"><span class="num">190+</span><span class="lbl">schools running Cohort</span></div>
-        <div class="hstat"><span class="num">12 min</span><span class="lbl">to build a bell schedule</span></div>
-      </div>
-    </div>
-
-    <div class="timetable" role="img" aria-label="Weekly class schedule showing period blocks and rooms">
-      <div class="tt-head">
-        <span class="title">MS. OKAFOR · PERIOD SCHEDULE</span>
-        <span class="day mono">MONDAY</span>
-      </div>
-      <div class="tt-grid">
-        <div class="tt-block">
-          <span class="tt-time">8:15</span>
-          <span class="tt-name">Algebra I — Section B</span>
-          <span class="tt-room">RM 214</span>
-        </div>
-        <div class="tt-block">
-          <span class="tt-time">9:20</span>
-          <span class="tt-name">Geometry — Section A</span>
-          <span class="tt-room">RM 214</span>
-        </div>
-        <div class="tt-block">
-          <span class="tt-time">10:40</span>
-          <span class="tt-name">Prep period</span>
-          <span class="tt-room">—</span>
-        </div>
-        <div class="tt-block">
-          <span class="tt-time">11:30</span>
-          <span class="tt-name">Algebra II — Section C</span>
-          <span class="tt-room">RM 214</span>
-        </div>
-      </div>
-    </div>
-  </div>
+<h1>School Information System</h1>
+<p>
+Manage Students, Teachers, Results, Attendance,
+Fees and Reports from one secure system.
+</p>
+<a href="login.php" class="btn">Login Now</a>
 </section>
 
-<div class="logostrip">
-  <div class="wrap">
-    <span>Running Cohort:</span>
-    <span><strong>Meridian USD</strong></span>
-    <span><strong>Cedar Grove Unified</strong></span>
-    <span><strong>Fairhaven Public Schools</strong></span>
-    <span><strong>Twin Rivers Academy</strong></span>
-    <span><strong>Northgate ISD</strong></span>
-  </div>
+<section>
+<h2 class="title">System Features</h2>
+<div class="cards">
+
+<div class="card">
+<h3>Students</h3>
+<p>Register and manage student information.</p>
 </div>
 
-<section id="features">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow2">THE PLATFORM</span>
-      <h2>One calendar, everything on it.</h2>
-      <p>Attendance, grading, scheduling and messaging all read from the same shared school calendar — so a schedule change updates attendance rules, gradebook periods, and parent notices at once.</p>
-    </div>
-    <div class="bento">
-      <div class="bcard big">
-        <span class="dot">01</span>
-        <h3>Live attendance</h3>
-        <p>Teachers mark rollcall from any device; the office dashboard updates instantly, period by period.</p>
-      </div>
-      <div class="bcard wide">
-        <span class="dot">02</span>
-        <h3>Gradebook that maps to the schedule</h3>
-        <p>Assignments and report cards are tied to real class periods, not a generic term structure.</p>
-      </div>
-      <div class="bcard narrow">
-        <span class="dot">03</span>
-        <h3>Records</h3>
-        <p>One student file — enrollment, health flags, and discipline notes together.</p>
-      </div>
-      <div class="bcard wide">
-        <span class="dot">04</span>
-        <h3>Conflict-free scheduling</h3>
-        <p>Build bell schedules and sections with automatic room and teacher conflict checks.</p>
-      </div>
-      <div class="bcard big">
-        <span class="dot">05</span>
-        <h3>Family notifications</h3>
-        <p>Absence, tardy, and grade alerts sent home by text or email, in the family's language.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="flow-wrap" id="flow">
-  <div class="wrap">
-    <div style="padding:64px 0 0;">
-      <span class="eyebrow2" style="color:var(--moss);">A SCHOOL DAY, START TO FINISH</span>
-      <h2 style="color:var(--cream); font-size:clamp(26px,3vw,34px); max-width:26ch; margin-bottom:8px;">The actual order things happen in.</h2>
-    </div>
-  </div>
-  <div class="wrap" style="padding:0;">
-    <div class="flow-row">
-      <div class="flow-cell"><span class="k">08:00</span><h4>First bell</h4><p>Teacher opens rollcall for the period, marks the room in under a minute.</p></div>
-      <div class="flow-cell"><span class="k">08:05</span><h4>Office sees it live</h4><p>Attendance rolls up to the office dashboard as each class checks in.</p></div>
-      <div class="flow-cell"><span class="k">08:20</span><h4>Families notified</h4><p>Unexplained absences trigger an automatic text or call home.</p></div>
-      <div class="flow-cell"><span class="k">15:30</span><h4>Day closes itself</h4><p>Attendance and grades post to the record — no re-entry, no reconciliation.</p></div>
-    </div>
-  </div>
+<div class="card">
+<h3>Results</h3>
+<p>Enter marks and print examination results.</p>
 </div>
 
-<section id="proof">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow2">FROM THE FRONT OFFICE</span>
-      <h2>What changes when it's all one calendar.</h2>
-    </div>
-    <div class="proof-grid">
-      <div class="proof-quote">
-        <p>"A schedule change used to mean updating four systems by hand. Now I change the bell schedule once and attendance, grading periods, and pickup notices all follow it."</p>
-        <span>— REGISTRAR, TWIN RIVERS ACADEMY</span>
-      </div>
-      <div class="proof-stats">
-        <div class="pstat"><span class="n">6.2 hrs</span><span class="l">saved per office, weekly</span></div>
-        <div class="pstat"><span class="n">98%</span><span class="l">absence notices sent same day</span></div>
-        <div class="pstat"><span class="n">3 wks</span><span class="l">to full rollout</span></div>
-        <div class="pstat"><span class="n">190+</span><span class="l">schools on Cohort</span></div>
-      </div>
-    </div>
-  </div>
+<div class="card">
+<h3>Attendance</h3>
+<p>Track daily student attendance.</p>
+</div>
+
+<div class="card">
+<h3>Teachers</h3>
+<p>Manage teachers and subjects.</p>
+</div>
+
+<div class="card">
+<h3>Fees</h3>
+<p>Monitor school fee payments.</p>
+</div>
+
+<div class="card">
+<h3>Reports</h3>
+<p>Generate printable reports instantly.</p>
+</div>
+
+</div>
 </section>
 
-<section id="pricing">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow2">PRICING</span>
-      <h2>Priced per student, not per module.</h2>
-      <p>Every plan includes attendance, scheduling, records, and messaging. Larger districts add gradebook and state reporting.</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="plan">
-        <h3>Single Campus</h3>
-        <div class="price">$3<span style="font-size:15px;">/student</span></div>
-        <div class="per">billed annually</div>
-        <ul>
-          <li>Attendance & scheduling</li>
-          <li>Family notifications</li>
-          <li>Student records</li>
-          <li>Email support</li>
-        </ul>
-        <a href="#" class="btn" style="border:1px solid var(--forest); text-align:center;">Talk to sales</a>
-      </div>
-      <div class="plan mid">
-        <h3>District</h3>
-        <div class="price">$5<span style="font-size:15px;">/student</span></div>
-        <div class="per">billed annually</div>
-        <ul>
-          <li>Everything in Single Campus</li>
-          <li>Gradebook & report cards</li>
-          <li>State reporting exports</li>
-          <li>Multi-school scheduling</li>
-          <li>Priority support</li>
-        </ul>
-        <a href="#" class="btn btn-coral" style="text-align:center;">Get a demo</a>
-      </div>
-      <div class="plan">
-        <h3>Enterprise</h3>
-        <div class="price">Custom</div>
-        <div class="per">5,000+ students</div>
-        <ul>
-          <li>Everything in District</li>
-          <li>SIS data migration</li>
-          <li>Dedicated onboarding</li>
-          <li>Custom integrations</li>
-        </ul>
-        <a href="#" class="btn" style="border:1px solid var(--forest); text-align:center;">Contact us</a>
-      </div>
-    </div>
-  </div>
+<section>
+<h2 class="title">About SIS</h2>
+<div class="about">
+<div>
+<h3>Simple, Fast and Secure</h3>
+<p>
+School Information System helps schools manage
+academic and administrative activities from one
+place. It improves accuracy, saves time and
+provides instant reports for administrators,
+teachers and students.
+</p>
+</div>
+
+<div>
+<img src="https://picsum.photos/600/400" alt="School">
+</div>
+</div>
 </section>
 
-<section class="cta">
-  <div class="wrap">
-    <h2>See your own school's calendar in Cohort.</h2>
-    <p>We'll load your real bell schedule and section list for the demo — not a sample district.</p>
-    <a href="#" class="btn btn-solid">Get a demo</a>
-  </div>
+<section class="contact">
+<h2>Contact Us</h2>
+<p>Email: info@school.ac.tz</p>
+<p>Phone: +255 700 000 000</p>
 </section>
 
 <footer>
-  <div class="wrap">
-    <div class="foot-grid">
-      <div class="logo"><span class="logo-mark">C</span> Cohort</div>
-      <div class="foot-cols">
-        <div class="foot-col">
-          <h4>PRODUCT</h4>
-          <a href="#features">Attendance</a>
-          <a href="#features">Gradebook</a>
-          <a href="#features">Scheduling</a>
-          <a href="#pricing">Pricing</a>
-        </div>
-        <div class="foot-col">
-          <h4>COMPANY</h4>
-          <a href="#">About</a>
-          <a href="#">Schools we work with</a>
-          <a href="#">Careers</a>
-        </div>
-        <div class="foot-col">
-          <h4>SUPPORT</h4>
-          <a href="#">Help center</a>
-          <a href="#">Privacy</a>
-          <a href="#">Contact</a>
-        </div>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <span>© 2026 Cohort, Inc.</span>
-      <span class="mono">One calendar. The whole school year.</span>
-    </div>
-  </div>
+&copy; 2026 School Information System. All Rights Reserved.
 </footer>
 
 </body>
